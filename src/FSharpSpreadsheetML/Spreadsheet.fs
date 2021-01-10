@@ -46,6 +46,15 @@ module Spreadsheet =
         WorkbookPart.appendSheet sheetName (SheetData.empty) workbookPart |> ignore
         doc
 
+    // Get the SharedStringTable
+    let getSharedStringTable (spreadsheetDocument:SpreadsheetDocument) =
+        spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable
+
+    // Get the SharedStringTable if it exists
+    let tryGetSharedStringTable (spreadsheetDocument:SpreadsheetDocument) =
+        try spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable |> Some
+        with | _ -> None
+
     // Get the SharedStringTablePart. If it does not exist, create a new one.
     let getOrInitSharedStringTablePart (spreadsheetDocument:SpreadsheetDocument) =
         let workbookPart = spreadsheetDocument.WorkbookPart    
@@ -62,15 +71,25 @@ module Spreadsheet =
             |> Worksheet.WorksheetPart.getByID sheet.Id.Value 
         )      
 
-    /// Returns the sheetData for the given 0 based sheetIndex of the given spreadsheetDocument. 
-    let tryGetSheetBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns the worksheetPart for the given 0 based sheetIndex of the given spreadsheetDocument. 
+    let tryGetWorksheetPartBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
         Sheet.tryItem sheetIndex spreadsheetDocument
         |> Option.map (fun sheet -> 
             spreadsheetDocument.WorkbookPart
             |> Worksheet.WorksheetPart.getByID sheet.Id.Value 
-            |> Worksheet.get
-            |> Worksheet.getSheetData
-        )        
+        )   
+        
+    /// Returns the sheetData for the given 0 based sheetIndex of the given spreadsheetDocument. 
+    let tryGetSheetBySheetName (name:string) (spreadsheetDocument:SpreadsheetDocument) =
+        tryGetWorksheetPartBySheetName name spreadsheetDocument
+        |> Option.map (Worksheet.get >> Worksheet.getSheetData)
+
+    /// Returns the sheetData for the given 0 based sheetIndex of the given spreadsheetDocument. 
+    let tryGetSheetBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+        tryGetWorksheetPartBySheetIndex sheetIndex spreadsheetDocument
+        |> Option.map (Worksheet.get >> Worksheet.getSheetData)
+        
+
 
     /// Returns a sequence of rows containing the cells for the given 0 based sheetIndex of the given spreadsheetDocument. 
     let getRowsBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =

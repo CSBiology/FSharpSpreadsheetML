@@ -185,8 +185,6 @@ pre::-webkit-scrollbar-thumb {
 
 }
 
-
-
 #Author:hover, #SourceCode:hover , #APILink:hover
 {
 	background-color:#2E75B6;
@@ -206,4 +204,11 @@ td.Head {
 td.API {
 	padding: 0px;
 	text-align: right;
+}
+
+img {
+	width: 50%;
+	height: 50%;
+	object-fit: scale-down;
+	overflow: hidden;
 }

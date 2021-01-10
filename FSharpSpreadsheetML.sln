@@ -7,12 +7,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D
 	ProjectSection(SolutionItems) = preProject
 		docs\content\index.fsx = docs\content\index.fsx
 		docs\content\Introduction.fsx = docs\content\Introduction.fsx
+		docs\content\table.fsx = docs\content\table.fsx
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{83F16175-43B1-4C90-A1EE-8E351C33435D}"
 	ProjectSection(SolutionItems) = preProject
 		build.fsx = build.fsx
 		.config\dotnet-tools.json = .config\dotnet-tools.json
+		docs\content\fsdocs-custom.css = docs\content\fsdocs-custom.css
 		global.json = global.json
 		paket.dependencies = paket.dependencies
 	EndProjectSection
