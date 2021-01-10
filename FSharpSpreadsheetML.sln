@@ -12,10 +12,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{83F16175-43B1-4C90-A1EE-8E351C33435D}"
 	ProjectSection(SolutionItems) = preProject
 		build.fsx = build.fsx
-		docs\tools\formatters.fsx = docs\tools\formatters.fsx
-		docs\tools\generate.fsx = docs\tools\generate.fsx
-		docs\tools\generateSingle.fsx = docs\tools\generateSingle.fsx
-		docs\tools\templates\template.cshtml = docs\tools\templates\template.cshtml
+		.config\dotnet-tools.json = .config\dotnet-tools.json
+		global.json = global.json
+		paket.dependencies = paket.dependencies
 	EndProjectSection
 EndProject
 Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpSpreadsheetML", "src\FSharpSpreadsheetML\FSharpSpreadsheetML.fsproj", "{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}"

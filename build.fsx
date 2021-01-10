@@ -390,7 +390,7 @@ let generateDocumentation =
             DotNet.exec
                 id
                 "fsdocs"
-                (sprintf "build --eval --property Configuration=%s" configuration)
+                (sprintf "build --eval --property Configuration=%s --noapidocs" configuration)
         
         if not result.OK then 
             failwith "error generating docs" 
