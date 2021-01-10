@@ -1,0 +1,25 @@
+type project
+id
+    FSharpSpreadsheetML
+authors 
+    Heinrich Lukas Weil, Kevin Schneider, Timo Mühlhaus
+description
+	FSharp wrapper for Open XML SDK, allowing Excel File reading and manipulation
+owners
+    CSBiology
+licenseUrl
+    https://github.com/CSBiology/FSharpSpreadsheetML/blob/master/LICENSE
+requireLicenseAcceptance
+    False
+language
+    F#
+copyright
+    Copyright 2020
+tags
+    F# FSharp Excel datascience
+summary
+    FSharp wrapper for Open XML SDK, allowing Excel File reading and manipulation
+repositoryType
+    git
+repositoryUrl
+    https://github.com/CSBiology/FSharpSpreadsheetML
