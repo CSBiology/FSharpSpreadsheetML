@@ -8,7 +8,7 @@ open DocumentFormat.OpenXml.Packaging
 module Worksheet = 
 
     /// Empty Worksheet
-    let empty = Worksheet()
+    let empty() = Worksheet()
 
     /// Associates a sheetData with the worksheet
     let addSheetData (sheetData:SheetData) (worksheet:Worksheet) = 
@@ -42,7 +42,7 @@ module Worksheet =
     /// Associates an empty worksheet with the worksheetpart
     let init (worksheetPart:WorksheetPart) = 
         worksheetPart
-        |> setWorksheet empty
+        |> setWorksheet (empty())
 
     /// Returns the existing or a newly created worksheet associated with the worksheetpart
     let getOrInit (worksheetPart:WorksheetPart) =

@@ -7,7 +7,7 @@ open DocumentFormat.OpenXml.Packaging
 module Workbook =
 
     /// Empty workbook
-    let empty = new Workbook()
+    let empty () = new Workbook()
     
     /// Gets the workbook of the workbookpart
     let get (workbookPart:WorkbookPart) = workbookPart.Workbook 

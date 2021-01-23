@@ -1,3 +1,7 @@
-#### 0.0.1-alpha - Saturday, September 5, 2020
+#### 0.0.2 - Saturday, January 24, 2021
 
-**Created repository.**
+**Fixed Bug where one element was inserted into multiple parent elements**
+
+#### 0.0.1 - Sunday, January 10, 2021
+
+**Moved Project from nfdi4plants/ArcCommander.**

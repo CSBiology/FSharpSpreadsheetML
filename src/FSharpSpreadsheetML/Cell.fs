@@ -12,7 +12,7 @@ module Cell =
     module CellValue = 
 
         /// Empty cellvalue
-        let empty = CellValue()
+        let empty() = CellValue()
 
         /// Create a new cellValue containing the given string
         let create (value:string) = CellValue(value)
@@ -25,7 +25,7 @@ module Cell =
 
 
     /// Empty cell
-    let empty = Cell()
+    let empty () = Cell()
 
     /// Returns the proper CellValues case for the given value
     let inferCellValue (value : 'T) = 

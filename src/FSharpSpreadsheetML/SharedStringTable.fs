@@ -29,11 +29,11 @@ module SharedStringTable =
             sst
 
     /// Empty sharedstringtable
-    let empty = SharedStringTable() 
+    let empty() = SharedStringTable() 
 
     /// Sets an empty sharedstringtable
     let init (sstPart:SharedStringTablePart) = 
-        sstPart.SharedStringTable <- empty
+        sstPart.SharedStringTable <- (empty())
         sstPart
 
     /// Gets the sharedstringtable of the sharedstringtablepart

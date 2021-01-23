@@ -79,7 +79,7 @@ module Row =
             referenceExceedsSpansToLeft reference spans
 
     /// Empty Row
-    let empty = Row()
+    let empty () = Row()
 
     /// Returns a sequence of cells contained in the row
     let toCellSeq (row:Row) : seq<Cell> = row.Descendants<Cell>() 

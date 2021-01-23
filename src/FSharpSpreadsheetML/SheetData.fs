@@ -6,7 +6,7 @@ open DocumentFormat.OpenXml.Spreadsheet
 module SheetData = 
 
     /// Empty SheetData
-    let empty = new SheetData()
+    let empty () = new SheetData()
 
     /// Inserts a row into the sheetdata before a reference row
     let insertBefore (row:Row) (refRow:Row) (sheetData:SheetData) = 

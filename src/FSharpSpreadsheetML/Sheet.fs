@@ -12,7 +12,7 @@ module Sheet =
     module Sheets = 
 
         /// Empty sheets
-        let empty = new Sheets()
+        let empty () = new Sheets()
 
         /// Returns the first child sheet of the sheets
         let getFirstSheet (sheets:Sheets) = sheets.GetFirstChild<Sheet>()
@@ -53,7 +53,7 @@ module Sheet =
 
     
     /// Empty Sheet
-    let empty = Sheet()
+    let empty () = Sheet()
 
     /// Sets the name of the sheet (This is the name displayed in excel)
     let setName (name:string) (sheet : Sheet) = 

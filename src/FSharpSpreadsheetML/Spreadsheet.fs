@@ -43,7 +43,7 @@ module Spreadsheet =
         let sharedStringTablePart = WorkbookPart.getOrInitSharedStringTablePart workbookPart
         SharedStringTable.init sharedStringTablePart |> ignore
 
-        WorkbookPart.appendSheet sheetName (SheetData.empty) workbookPart |> ignore
+        WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
         doc
 
     // Get the SharedStringTable
