@@ -5,8 +5,8 @@ open System.Reflection
 [<assembly: AssemblyTitleAttribute("FSharpSpreadsheetML")>]
 [<assembly: AssemblyProductAttribute("FSharpSpreadsheetML")>]
 [<assembly: AssemblyDescriptionAttribute("FSharp wrapper for Open XML SDK, allowing Excel File reading and manipulation")>]
-[<assembly: AssemblyVersionAttribute("0.0.1")>]
-[<assembly: AssemblyFileVersionAttribute("0.0.1")>]
+[<assembly: AssemblyVersionAttribute("0.0.3")>]
+[<assembly: AssemblyFileVersionAttribute("0.0.3")>]
 [<assembly: AssemblyConfigurationAttribute("Release")>]
 do ()
 
@@ -14,6 +14,6 @@ module internal AssemblyVersionInformation =
     let [<Literal>] AssemblyTitle = "FSharpSpreadsheetML"
     let [<Literal>] AssemblyProduct = "FSharpSpreadsheetML"
     let [<Literal>] AssemblyDescription = "FSharp wrapper for Open XML SDK, allowing Excel File reading and manipulation"
-    let [<Literal>] AssemblyVersion = "0.0.1"
-    let [<Literal>] AssemblyFileVersion = "0.0.1"
+    let [<Literal>] AssemblyVersion = "0.0.3"
+    let [<Literal>] AssemblyFileVersion = "0.0.3"
     let [<Literal>] AssemblyConfiguration = "Release"

@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <GenerateProgramFile>false</GenerateProgramFile>
   </PropertyGroup>
-
   <ItemGroup>
+    <None Include="paket.references" />
     <Compile Include="Utils.fs" />
     <Compile Include="FSharpSpreadsheetML\SomeTests.fs" />
     <Compile Include="Main.fs" />
   </ItemGroup>
-
+  <ItemGroup />
   <ItemGroup>
     <PackageReference Include="AltCover" Version="7.1.778" />
     <PackageReference Include="Expecto" Version="9.*" />
@@ -20,4 +20,5 @@
     <ProjectReference Include="..\..\src\FSharpSpreadsheetML\FSharpSpreadsheetML.fsproj" />
     <PackageReference Update="FSharp.Core" Version="4.*" />
   </ItemGroup>
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
