@@ -1,10 +1,11 @@
-(*** hide ***)
-// This block of code is omitted in the generated HTML documentation. Use 
-// it to define helpers that you do not want to show in the documentation.
-#I @"../../bin/FSharpSpreadsheetML/net47/"
-
-#r "DocumentFormat.OpenXml.dll"
-#r "FSharpSpreadsheetML.dll"
+(*** condition: prepare ***)
+#r @"nuget: DocumentFormat.OpenXml"
+#r "../bin/FSharpSpreadsheetML/netstandard2.0/FSharpSpreadsheetML.dll"
+(*** condition: ipynb ***)
+#if IPYNB
+#r "nuget: Plotly.NET, {{fsdocs-package-version}}"
+#r "nuget: Plotly.NET.Interactive, {{fsdocs-package-version}}"
+#endif // IPYNB
 
 let source = __SOURCE_DIRECTORY__
 
@@ -12,6 +13,7 @@ open FSharpSpreadsheetML
 
 (**
 # Table
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/plotly/Plotly.NET/gh-pages?filepath=Table.fsx.ipynb)
 
 The table object itself just stores the name, the headers and the area in which the table lies. The values are stored in the sheetData object associated with the same worksheet as the table.
 
@@ -26,7 +28,7 @@ We try to access the table in the following excel sheet:
 
 *)
 
-let path = source + @"\files\tableTestFile.xlsx"
+let path = source + @"\content\files\tableTestFile.xlsx"
 
 // Open excel document in no edit mode
 let doc = Spreadsheet.fromFile path false

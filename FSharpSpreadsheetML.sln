@@ -1,28 +1,26 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30503.244
+VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{8E6D5255-776D-4B61-85F9-73C37AA1FB9A}"
-	ProjectSection(SolutionItems) = preProject
-		docs\content\index.fsx = docs\content\index.fsx
-		docs\content\Introduction.fsx = docs\content\Introduction.fsx
-		docs\content\table.fsx = docs\content\table.fsx
-	EndProjectSection
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpSpreadsheetML", "src\FSharpSpreadsheetML\FSharpSpreadsheetML.fsproj", "{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{83F16175-43B1-4C90-A1EE-8E351C33435D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{DF9FCD2E-E2CD-48F1-A2E2-66AC6CA8760D}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		build.cmd = build.cmd
 		build.fsx = build.fsx
-		.config\dotnet-tools.json = .config\dotnet-tools.json
-		docs\content\fsdocs-custom.css = docs\content\fsdocs-custom.css
-		global.json = global.json
-		paket.dependencies = paket.dependencies
+		README.md = README.md
 		RELEASE_NOTES.md = RELEASE_NOTES.md
 	EndProjectSection
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpSpreadsheetML", "src\FSharpSpreadsheetML\FSharpSpreadsheetML.fsproj", "{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}"
+Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpSpreadsheetML.Tests", "tests\FSharpSpreadsheetML.Tests\FSharpSpreadsheetML.Tests.fsproj", "{F86608AE-B430-43C4-82EF-77854697221F}"
 EndProject
-Project("{6EC3EE1D-3C4E-46DD-8F32-0CC8E7565705}") = "FSharpSpreadsheetML.Tests.NetCore", "tests\FSharpSpreadsheetML.Tests.NetCore\FSharpSpreadsheetML.Tests.NetCore.fsproj", "{618F5887-509A-4C7A-8536-6CCA51A8F85B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "content", "content", "{408F44A0-9B74-4883-A6DC-4568CAA174A4}"
+	ProjectSection(SolutionItems) = preProject
+		docs\index.fsx = docs\index.fsx
+		docs\table.fsx = docs\table.fsx
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,35 +32,35 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|x64.Build.0 = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Debug|x86.Build.0 = Debug|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|x64.ActiveCfg = Release|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|x64.Build.0 = Release|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|x86.ActiveCfg = Release|Any CPU
-		{0B4C521D-F935-4DAD-9DB8-FF19AAD882E9}.Release|x86.Build.0 = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|x64.Build.0 = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Debug|x86.Build.0 = Debug|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|x64.ActiveCfg = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|x64.Build.0 = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|x86.ActiveCfg = Release|Any CPU
-		{618F5887-509A-4C7A-8536-6CCA51A8F85B}.Release|x86.Build.0 = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|x64.Build.0 = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Debug|x86.Build.0 = Debug|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|x64.Build.0 = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|x86.ActiveCfg = Release|Any CPU
+		{83A68C18-7D66-4A8C-B536-36AAC0CD8B5C}.Release|x86.Build.0 = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|x64.Build.0 = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Debug|x86.Build.0 = Debug|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|x64.ActiveCfg = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|x64.Build.0 = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|x86.ActiveCfg = Release|Any CPU
+		{F86608AE-B430-43C4-82EF-77854697221F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {F4FA3718-6BBE-44B3-A581-3309B3967A0A}
+		SolutionGuid = {8BC111D3-9DCF-443A-9C57-974C21CAA671}
 	EndGlobalSection
 EndGlobal
