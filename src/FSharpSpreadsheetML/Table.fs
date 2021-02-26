@@ -168,6 +168,15 @@ module Table =
         worksheetPart.TableDefinitionParts
         |> Seq.tryPick (fun t -> if predicate t.Table.Name.Value then Some t.Table else None)
 
+    /// If the worksheetPart contains tables, returns the first
+    let tryGetFirst (worksheetPart : WorksheetPart) =
+        try 
+            worksheetPart.TableDefinitionParts
+            |> Seq.head
+            |> fun t ->  Some t.Table
+        with
+        | _ -> None
+
     /// List all tables contained in the Worksheet
     let list (worksheetPart : WorksheetPart) =
         worksheetPart.TableDefinitionParts
@@ -182,23 +191,66 @@ module Table =
         table.Name <- (StringValue(name))
         table
 
+    /// Gets the name of the table
+    let getDisplayName (table:Table) =
+        table.DisplayName.Value
+
+    /// Sets the name of the table
+    let setDisplayName (displayName:string) (table:Table) =
+        table.DisplayName <- (StringValue(displayName))
+        table
+
     /// Gets the area of the table
     let getArea (table:Table) =
-        table.AutoFilter.Reference
+        table.Reference
 
     /// Sets the area of the table
     let setArea area (table:Table) =
-        table.AutoFilter.Reference <- area
+        table.Reference <- area
 
     /// Creates a table from a name a area and table columns
-    let create (name:string) area tableColumns = 
+    let create (displayName:string) area tableColumns = 
         let t = Table()
         let a = AutoFilter()
         a.Reference <- area
         t.AutoFilter <- a
-        t.Name <- StringValue(name)
+        t.Reference <- area
+        t.DisplayName <- StringValue(displayName)
         t.TableColumns <- TableColumns.create tableColumns
         t
+
+
+    /// Adds a created table to the worksheet
+    let addTable (worksheetPart:WorksheetPart) (table:Table) =
+        // https://stackoverflow.com/questions/53440352/openxml-table-creation-how-do-i-create-tables-without-requiring-excel-to-repa
+        printfn "start addTable"
+        let id = worksheetPart.TableDefinitionParts |> Seq.length |> (+) 1
+        let tableDefinitionPart = worksheetPart.AddNewPart<TableDefinitionPart>(sprintf "rId%i" id);
+        table.Id <- (UInt32Value.FromUInt32(uint id))
+        table.Name <- StringValue(sprintf "Table%i" id)
+        if table.TableStyleInfo = null then
+            table.TableStyleInfo <- TableStyleInfo(Name = StringValue("TableStyleMedium2"), ShowFirstColumn = BooleanValue(false), ShowLastColumn = BooleanValue(false), ShowRowStripes = BooleanValue(true), ShowColumnStripes = BooleanValue(false) )
+        tableDefinitionPart.Table <- table
+
+        let tablePart = TablePart(Id = (StringValue (sprintf "rId%i" id)))
+        let tableParts =             
+            let tablePartSOption = 
+                worksheetPart.Worksheet.ChildElements 
+                |> Seq.tryPick (fun ce -> try ce :?> TableParts |> Some with | _ -> None) 
+
+            match tablePartSOption with
+            | Some tp -> tp
+            | None ->
+                let tableParts = new TableParts()
+                tableParts.Count <- UInt32Value.FromUInt32 0u
+                worksheetPart.Worksheet.Append(tableParts)
+                tableParts
+
+        tableParts.Count <- tableParts.Count.Value |> (+) 1u |> UInt32Value.FromUInt32     
+        tableParts.AppendChild(tablePart) |> ignore
+
+        printfn "%i" id
+        worksheetPart
 
     /// Create a table object by an area. If the first row of this area contains values in the given sheet, these are chosen as headers for the table and a table is returned.
     let tryCreateWithExistingHeaders (sst:SharedStringTable Option) sheetData name area =
@@ -295,7 +347,7 @@ module Table =
             let upperBoundary = Area.upperBoundary area
             let lowerBoundary = Area.lowerBoundary area
             let header = SheetData.tryGetCellValueAt sst upperBoundary c sheetData |> Option.get
-            List.init (lowerBoundary - upperBoundary |> int |> (+) -1) (fun i ->
+            List.init (lowerBoundary - upperBoundary |> int) (fun i ->
                 let r = uint i + upperBoundary + 1u
                 match SheetData.tryGetCellValueAt sst r c sheetData with
                 | Some v -> dictionary.Add((header,i),v)
