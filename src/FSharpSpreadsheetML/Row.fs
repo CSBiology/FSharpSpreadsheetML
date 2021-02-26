@@ -355,3 +355,8 @@ module Row =
             |> extendSpanRight spanExceedance
             |> appendCell cell
 
+    /// Includes value from SharedStringTable in the cells of the row
+    let includeSharedStringValue (sharedStringTable:SharedStringTable) (row:Row) =
+        row
+        |> mapCells (Cell.includeSharedStringValue sharedStringTable)
+

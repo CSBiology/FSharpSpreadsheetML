@@ -26,6 +26,13 @@ module SheetData =
     let getRows (sheetData:SheetData) : seq<Row>= 
         sheetData.Descendants<Row>()
 
+    let mapRows (f: Row -> Row) (sheetData:SheetData) =
+        
+        sheetData
+        |> getRows
+        |> Seq.iter (f >> ignore)
+        sheetData
+
 
     /// Returns the number of rows contained in the sheetdata
     let countRows (sheetData:SheetData) = 
@@ -281,3 +288,8 @@ module SheetData =
         else
             Row.updateRowSpan row |> ignore
             sheet
+
+    /// Includes value from SharedStringTable in the cells of the rows of the sheetData
+    let includeSharedStringValue (sharedStringTable:SharedStringTable) (sheetData:SheetData) =
+        sheetData
+        |> mapRows (Row.includeSharedStringValue sharedStringTable)

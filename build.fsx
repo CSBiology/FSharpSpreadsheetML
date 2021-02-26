@@ -145,6 +145,58 @@ module TestTasks =
         ) testProject
     }
 
+module ReleaseNoteTasks =
+
+    open Fake.Extensions.Release
+
+    let createAssemblyVersion = BuildTask.create "createvfs" [] {
+        AssemblyVersion.create ProjectInfo.gitName
+    }
+
+    let updateReleaseNotes = BuildTask.createFn "ReleaseNotes" [] (fun config ->
+        Release.exists()
+
+        Release.update(ProjectInfo.gitOwner, ProjectInfo.gitName, config)
+    )
+
+    let githubDraft = BuildTask.createFn "GithubDraft" [] (fun config ->
+
+        let body = "We are ready to go for the first release!"
+
+        Github.draft(
+            ProjectInfo.gitOwner,
+            ProjectInfo.gitName,
+            (Some body),
+            None,
+            config
+        )
+    )module ReleaseNoteTasks =
+
+    open Fake.Extensions.Release
+
+    let createAssemblyVersion = BuildTask.create "createvfs" [] {
+        AssemblyVersion.create ProjectInfo.gitName
+    }
+
+    let updateReleaseNotes = BuildTask.createFn "ReleaseNotes" [] (fun config ->
+        Release.exists()
+
+        Release.update(ProjectInfo.gitOwner, ProjectInfo.gitName, config)
+    )
+
+    let githubDraft = BuildTask.createFn "GithubDraft" [] (fun config ->
+
+        let body = "We are ready to go for the first release!"
+
+        Github.draft(
+            ProjectInfo.gitOwner,
+            ProjectInfo.gitName,
+            (Some body),
+            None,
+            config
+        )
+    )
+
 /// Package creation
 module PackageTasks = 
 

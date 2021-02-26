@@ -13,7 +13,7 @@ module Spreadsheet =
     let fromFile (path:string) isEditable = SpreadsheetDocument.Open(path,isEditable)
 
     /// Initializes a new empty spreadsheet at the given path
-    let init (path:string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
+    let initEmpty (path:string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
 
     // Gets the workbookpart of the spreadsheet
     let getWorkbookPart (spreadsheet:SpreadsheetDocument) = spreadsheet.WorkbookPart
@@ -35,15 +35,22 @@ module Spreadsheet =
         |> close
         spreadsheet
 
-    /// Initializes a new empty spreadsheet at the given path
-    let initWithSST sheetName (path:string) = 
-        let doc = init path
+    /// Initializes a new spreadsheet with an empty sheet at the given path
+    let init sheetName (path:string) = 
+        let doc = initEmpty path
         let workbookPart = initWorkbookPart doc
+
+        WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
+        doc
+
+    /// Initializes a new spreadsheet with an empty sheet and a sharedStringTable at the given path
+    let initWithSST sheetName (path:string) = 
+        let doc = init sheetName path
+        let workbookPart = getWorkbookPart doc
 
         let sharedStringTablePart = WorkbookPart.getOrInitSharedStringTablePart workbookPart
         SharedStringTable.init sharedStringTablePart |> ignore
 
-        WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
         doc
 
     // Get the SharedStringTable
