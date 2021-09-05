@@ -1,3 +1,9 @@
+### 0.0.5+28448eb (Released 2021-9-5)
+* Additions:
+    * latest commit #28448eb
+    * [[#b02b416](https://github.com/CSBiology/FSharpSpreadsheetML/commit/b02b41618bb4c9a4ebd4f8c5ea8d61706e038bab)] Modify toSparseValueMatrix function
+    * [[#61e4847](https://github.com/CSBiology/FSharpSpreadsheetML/commit/61e484711e9b4aff16e33680e356ba9094fd9691)] Add toSparseValueMatrix function in SheetData module
+
 ### 0.0.4+1490639 (Released 2021-2-26)
 * Additions:
     * latest commit #1490639
