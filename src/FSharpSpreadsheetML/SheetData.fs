@@ -293,3 +293,41 @@ module SheetData =
     let includeSharedStringValue (sharedStringTable:SharedStringTable) (sheetData:SheetData) =
         sheetData
         |> mapRows (Row.includeSharedStringValue sharedStringTable)
+
+//----------------------------------------------------------------------------------------------------------------------
+//                                                Sheet(s)                                                                 
+//----------------------------------------------------------------------------------------------------------------------
+
+    let internal getSparseValueMatrix (sst : SharedStringTable) sheetData transformColumn =
+        let rows = SheetData.getRows sheetData
+        let noOfRows = SheetData.countRows sheetData
+        let noOfCols = 
+            // not sure if this is needed since it SEEMS that all left boundaries are always adjusted to the highest value appearing in the rows.
+            // if that'd definitely be the case, the left boundary of one of the rows would already be sufficient
+            let highestLeftBoundary = 
+                rows 
+                |> Seq.map (
+                    Row.getSpan 
+                    >> Row.Spans.toBoundaries
+                    >> snd
+                )
+                |> Seq.max
+            int highestLeftBoundary
+        let dict = System.Collections.Generic.Dictionary<'a * int, string>()
+        for iC = 0 to noOfCols - 1 do
+            // NOTE: iC is the column index ranging defining the number of columns, columnIndex on the other hand is the real column index as uint
+            let columnIndex = iC + 1 |> uint
+            for iR = 0 to noOfRows - 1 do
+                // NOTE: iR is the row index ranging defining the number of rows, 
+                // this rowIndex on the other hand is the real row index since there might be rows not occupied with values (empty rows) in between
+                let rowIndex = Seq.item iR rows |> Row.getIndex
+                match SheetData.tryGetCellValueAt (Some sst) rowIndex columnIndex sheetData with
+                | Some v -> dict.Add((transformColumn columnIndex,int rowIndex),v)
+                | None -> ()
+        dict
+
+    /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column letter-index and row index tuple.
+    let toSparseValueMatrix (sst : SharedStringTable) sheetData = getSparseValueMatrix sst sheetData toExcelLetters
+
+    /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column index and row index tuple.
+    let toSparseValueMatrix2 (sst : SharedStringTable) sheetData = getSparseValueMatrix sst sheetData int
