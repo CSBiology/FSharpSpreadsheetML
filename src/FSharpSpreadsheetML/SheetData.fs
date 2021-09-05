@@ -300,8 +300,8 @@ module SheetData =
 
     /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column index and row index tuple.
     let toSparseValueMatrix (sst : SharedStringTable) sheetData =
-        let rows = SheetData.getRows sheetData
-        let noOfRows = SheetData.countRows sheetData
+        let rows = getRows sheetData
+        let noOfRows = countRows sheetData
         let noOfCols = 
             // not sure if this is needed since it SEEMS that all left boundaries are always adjusted to the highest value appearing in the rows.
             // if that'd definitely be the case, the left boundary of one of the rows would already be sufficient
@@ -322,7 +322,7 @@ module SheetData =
                 // NOTE: iR is the row index ranging defining the number of rows, 
                 // this rowIndex on the other hand is the real row index since there might be rows not occupied with values (empty rows) in between
                 let rowIndex = Seq.item iR rows |> Row.getIndex
-                match SheetData.tryGetCellValueAt (Some sst) rowIndex columnIndex sheetData with
+                match tryGetCellValueAt (Some sst) rowIndex columnIndex sheetData with
                 | Some v -> dict.Add((int columnIndex,int rowIndex),v)
                 | None -> ()
         dict
