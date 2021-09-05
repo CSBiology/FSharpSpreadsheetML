@@ -338,7 +338,7 @@ module Table =
             |> Some
         | _ -> None
 
-    /// Reads a complete table. Values are stored sparsely in a dictionary, with the key being a column header and row index tuple
+    /// Reads a complete table. Values are stored sparsely in a dictionary, with the key being a column header and row index tuple.
     let toSparseValueMatrix (sst:SharedStringTable Option) sheetData (table:Table) =
         let area = getArea table
         let dictionary = System.Collections.Generic.Dictionary<string*int,string>()
