@@ -298,7 +298,8 @@ module SheetData =
 //                                                Sheet(s)                                                                 
 //----------------------------------------------------------------------------------------------------------------------
 
-    let internal getSparseValueMatrix (sst : SharedStringTable) sheetData transformColumn =
+    /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column index and row index tuple.
+    let toSparseValueMatrix (sst : SharedStringTable) sheetData =
         let rows = SheetData.getRows sheetData
         let noOfRows = SheetData.countRows sheetData
         let noOfCols = 
@@ -313,7 +314,7 @@ module SheetData =
                 )
                 |> Seq.max
             int highestLeftBoundary
-        let dict = System.Collections.Generic.Dictionary<'a * int, string>()
+        let dict = System.Collections.Generic.Dictionary<int * int, string>()
         for iC = 0 to noOfCols - 1 do
             // NOTE: iC is the column index ranging defining the number of columns, columnIndex on the other hand is the real column index as uint
             let columnIndex = iC + 1 |> uint
@@ -322,12 +323,6 @@ module SheetData =
                 // this rowIndex on the other hand is the real row index since there might be rows not occupied with values (empty rows) in between
                 let rowIndex = Seq.item iR rows |> Row.getIndex
                 match SheetData.tryGetCellValueAt (Some sst) rowIndex columnIndex sheetData with
-                | Some v -> dict.Add((transformColumn columnIndex,int rowIndex),v)
+                | Some v -> dict.Add((int columnIndex,int rowIndex),v)
                 | None -> ()
         dict
-
-    /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column letter-index and row index tuple.
-    let toSparseValueMatrix (sst : SharedStringTable) sheetData = getSparseValueMatrix sst sheetData toExcelLetters
-
-    /// Reads the values of all cells from a sheetData and a SharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column index and row index tuple.
-    let toSparseValueMatrix2 (sst : SharedStringTable) sheetData = getSparseValueMatrix sst sheetData int
