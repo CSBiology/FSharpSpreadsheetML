@@ -12,6 +12,9 @@ module Spreadsheet =
     /// Opens the spreadsheet located at the given path
     let fromFile (path:string) isEditable = SpreadsheetDocument.Open(path,isEditable)
 
+    /// Opens the spreadsheet located at the given path
+    let fromStream (stream:System.IO.Stream) isEditable = SpreadsheetDocument.Open(stream,isEditable)
+
     /// Initializes a new empty spreadsheet at the given path
     let initEmpty (path:string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
 
