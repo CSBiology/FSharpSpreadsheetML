@@ -1,3 +1,10 @@
+### 0.0.6+ff260d6 (Released 2021-9-7)
+* Additions:
+    * latest commit #ff260d6
+    * [[#ff260d6](https://github.com/CSBiology/FSharpSpreadsheetML/commit/ff260d675d7a8842fc6235cedd2cd7d170f9fdb9)] add Spreadsheet fromStream functionality
+* Bugfixes:
+    * [[#1a9e018](https://github.com/CSBiology/FSharpSpreadsheetML/commit/1a9e018942461794c5a6375bb17857aed17beefc)] fix SheetData.toSparseValueMatrix
+
 ### 0.0.5+28448eb (Released 2021-9-5)
 * Additions:
     * latest commit #28448eb
