@@ -2,6 +2,7 @@
 
 open DocumentFormat.OpenXml.Spreadsheet
 
+/// Functions for working with CellData.
 module CellData =
 
 
@@ -32,7 +33,8 @@ module CellData =
         | Date    of string
         | Error   of string
 
-    let ofCell (sharedStringTable:SharedStringTable) (cell:Cell) =
+    /// Creates a CellDataValue from a sharedStringTable and a cell.
+    let ofCell (sharedStringTable : SharedStringTable) (cell : Cell) =
         if not (isNull cell.DataType) then  
             let index = int cell.InnerText
             match sharedStringTable |> Seq.tryItem index with 

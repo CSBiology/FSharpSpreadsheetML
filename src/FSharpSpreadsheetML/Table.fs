@@ -10,100 +10,100 @@ open DocumentFormat.OpenXml
 /// The table object itself just stores the name, the headers and the area in which the table lies.
 /// The values are stored in the sheetData object associated with the same worksheet as the table.
 ///
-/// Therefore in order to work with tables, one should retrieve both the sheetData and the table. The Value retrieval functions ask for both.
+/// Therefore, in order to work with tables, one should retrieve both the sheetData and the table. The value retrieval functions ask for both.
 module Table =
     
-    //  Helper functions for working with "A1:A1" style table areas
+    //  Helper functions for working with "A1:A1"-style table areas.
     /// The areas marks the area in which the table lies. 
     module Area =
 
-        /// Given A1 based top left start and bottom right end indices, returns a "A1:A1" style area
+        /// Given A1-based top left start and bottom right end indices, returns a "A1:A1"-style area-
         let ofBoundaries fromCellReference toCellReference = 
             sprintf "%s:%s" fromCellReference toCellReference
             |> StringValue.FromString
 
-        /// Given a "A1:A1" style area , returns A1 based cell start and end cellReferences
-        let toBoundaries (area:StringValue) = 
+        /// Given a "A1:A1"-style area, returns A1-based cell start and end cellReferences.
+        let toBoundaries (area : StringValue) = 
             area.Value.Split ':'
             |> fun a -> a.[0], a.[1]
 
-        /// Gets the right boundary of the area
-        let rightBoundary (area:StringValue) = 
+        /// Gets the right boundary of the area.
+        let rightBoundary (area : StringValue) = 
             toBoundaries area
             |> snd
             |> CellReference.toIndices
             |> fst
 
-        /// Gets the left boundary of the area
-        let leftBoundary (area:StringValue) = 
+        /// Gets the left boundary of the area.
+        let leftBoundary (area : StringValue) = 
             toBoundaries area
             |> fst
             |> CellReference.toIndices
             |> fst
 
-        /// Gets the Upper boundary of the area
-        let upperBoundary (area:StringValue) = 
+        /// Gets the Upper boundary of the area.
+        let upperBoundary (area : StringValue) = 
             toBoundaries area
             |> fst
             |> CellReference.toIndices
             |> snd
 
-        /// Gets the lower boundary of the area
-        let lowerBoundary (area:StringValue) = 
+        /// Gets the lower boundary of the area.
+        let lowerBoundary (area : StringValue) = 
             toBoundaries area
             |> snd
             |> CellReference.toIndices
             |> snd
 
-        /// Moves both start and end of the area by the given amount (positive amount moves area to right and vice versa)
-        let moveHorizontal amount (area:StringValue) =
+        /// Moves both start and end of the area by the given amount (positive amount moves area to right and vice versa).
+        let moveHorizontal amount (area : StringValue) =
             area
             |> toBoundaries
             |> fun (f,t) -> CellReference.moveHorizontal amount f, CellReference.moveHorizontal amount t
             ||> ofBoundaries
 
-        /// Moves both start and end of the area by the given amount (positive amount moves area to right and vice versa)
-        let moveVertical amount (area:StringValue) =
+        /// Moves both start and end of the area by the given amount (positive amount moves area to right and vice versa).
+        let moveVertical amount (area : StringValue) =
             area
             |> toBoundaries
             |> fun (f,t) -> CellReference.moveHorizontal amount f, CellReference.moveHorizontal amount t
             ||> ofBoundaries
 
-        /// Extends the righ boundary of the area by the given amount (positive amount increases area to right and vice versa)
-        let extendRight amount (area:StringValue) =
+        /// Extends the right boundary of the area by the given amount (positive amount increases area to right and vice versa).
+        let extendRight amount (area : StringValue) =
             area
             |> toBoundaries
             |> fun (f,t) -> f, CellReference.moveHorizontal amount t
             ||> ofBoundaries
 
-        /// Extends the left boundary of the area by the given amount (positive amount decreases the area to left and vice versa)
-        let extendLeft amount (area:StringValue) =
+        /// Extends the left boundary of the area by the given amount (positive amount decreases the area to left and vice versa).
+        let extendLeft amount (area : StringValue) =
             area
             |> toBoundaries
             |> fun (f,t) -> CellReference.moveHorizontal amount f, t
             ||> ofBoundaries
 
-        /// Returns true if the column index of the reference exceeds the right boundary of the area
+        /// Returns true if the column index of the reference exceeds the right boundary of the area.
         let referenceExceedsAreaRight reference area = 
             (reference |> CellReference.toIndices |> fst) 
                 > (area |> rightBoundary)
         
-        /// Returns true if the column index of the reference exceeds the left boundary of the area
+        /// Returns true if the column index of the reference exceeds the left boundary of the area.
         let referenceExceedsAreaLeft reference area = 
             (reference |> CellReference.toIndices |> fst) 
                 < (area |> leftBoundary)  
      
-        /// Returns true if the column index of the reference exceeds the upper boundary of the area
+        /// Returns true if the column index of the reference exceeds the upper boundary of the area.
         let referenceExceedsAreaAbove reference area = 
             (reference |> CellReference.toIndices |> snd) 
                 > (area |> upperBoundary)
         
-        /// Returns true if the column index of the reference exceeds the lower boundary of the area
+        /// Returns true if the column index of the reference exceeds the lower boundary of the area.
         let referenceExceedsAreaBelow reference area = 
             (reference |> CellReference.toIndices |> snd) 
                 < (area |> lowerBoundary )  
 
-        /// Returns true if the reference does not lie in the boundary of the area
+        /// Returns true if the reference does not lie in the boundary of the area.
         let referenceExceedsArea reference area = 
             referenceExceedsAreaRight reference area
             ||
@@ -113,14 +113,14 @@ module Table =
             ||
             referenceExceedsAreaBelow reference area
  
-        /// Returns true, if the A1:A1 style area is of correct format
+        /// Returns true if the A1:A1-style area is of correct format.
         let isCorrect area = 
             try
                 let hor = leftBoundary  area <= rightBoundary area
                 let ver = upperBoundary area <= lowerBoundary area 
 
-                if not hor then printfn "Right area boundary must be higher or equal to left area boundary"
-                if not ver then printfn "Lower area boundary must be higher or equal to upper area boundary"
+                if not hor then printfn "Right area boundary must be higher or equal to left area boundary."
+                if not ver then printfn "Lower area boundary must be higher or equal to upper area boundary."
 
                 hor && ver
                                         
@@ -129,46 +129,50 @@ module Table =
                 printfn "Area \"%s\" could not be parsed: %s" area.Value err.Message
                 false
 
+    /// Functions for working with the columns of a table.
     module TableColumns = 
 
-        /// Gets the tableColumns from a table
+        /// Gets the tableColumns from a table.
         let get (table : Table) =
             table.TableColumns
 
-        /// Gets the columns from a tableColumns element
-        let getTableColumns (tableColumns:TableColumns) =
+        /// Gets the columns from a tableColumns element.
+        let getTableColumns (tableColumns : TableColumns) =
             tableColumns.Elements<TableColumn>()
 
-        /// Retruns the number of columns in a tableColumns element
-        let count (tableColumns:TableColumns) =
+        /// Retruns the number of columns in a tableColumns element.
+        let count (tableColumns : TableColumns) =
             getTableColumns tableColumns
             |> Seq.length
 
+        /// Creates a tableColumns sequence.
         let create (tableColumns : TableColumn seq) = 
             TableColumns(tableColumns |> Seq.map (fun c -> c :> OpenXmlElement))
             
+    /// Functions for working with a single tableColumn of a table.
     module TableColumn =
         
-        /// Gets Name of TableColumn
-        let getName (tableColumn:TableColumn) =
+        /// Gets Name of a tableColumn.
+        let getName (tableColumn : TableColumn) =
             tableColumn.Name.Value
 
-        /// Gets 1 based column index of TableColumn
-        let getId (tableColumn:TableColumn) =
+        /// Gets 1-based column index of tableColumn.
+        let getId (tableColumn : TableColumn) =
             tableColumn.Id.Value
 
-        let create (id:uint) (name : string) =
+        /// Creates a tableColumn of the given name and id.
+        let create (id : uint) (name : string) =
             let tc = TableColumn()
             tc.Name <- StringValue(name)
             tc.Id <- UInt32Value(id)
             tc
 
-    /// If a table exists, for which the predicate applied to its name returns true, gets it
+    /// If a table exists, for which the predicate applied to its name returns true, gets it. Else returns None.
     let tryGetByNameBy (predicate : string -> bool) (worksheetPart : WorksheetPart) =
         worksheetPart.TableDefinitionParts
         |> Seq.tryPick (fun t -> if predicate t.Table.Name.Value then Some t.Table else None)
 
-    /// If the worksheetPart contains tables, returns the first
+    /// If the worksheetPart contains tables, returns the first one. Else returns None.
     let tryGetFirst (worksheetPart : WorksheetPart) =
         try 
             worksheetPart.TableDefinitionParts
@@ -177,39 +181,39 @@ module Table =
         with
         | _ -> None
 
-    /// List all tables contained in the Worksheet
+    /// List all tables contained in the worksheet.
     let list (worksheetPart : WorksheetPart) =
         worksheetPart.TableDefinitionParts
         |> Seq.map (fun t -> t.Table)
 
-    /// Gets the name of the table
-    let getName (table:Table) =
+    /// Gets the name of a table.
+    let getName (table : Table) =
         table.Name.Value
 
-    /// Sets the name of the table
-    let setName (name:string) (table:Table) =
+    /// Sets the name of a table.
+    let setName (name : string) (table : Table) =
         table.Name <- (StringValue(name))
         table
 
-    /// Gets the name of the table
+    /// Gets the diplayName of a table.
     let getDisplayName (table:Table) =
         table.DisplayName.Value
 
-    /// Sets the name of the table
-    let setDisplayName (displayName:string) (table:Table) =
+    /// Sets the displayName of the table.
+    let setDisplayName (displayName : string) (table : Table) =
         table.DisplayName <- (StringValue(displayName))
         table
 
-    /// Gets the area of the table
-    let getArea (table:Table) =
+    /// Gets the area of the table.
+    let getArea (table : Table) =
         table.Reference
 
-    /// Sets the area of the table
-    let setArea area (table:Table) =
+    /// Sets the area of the table.
+    let setArea area (table : Table) =
         table.Reference <- area
 
-    /// Creates a table from a name a area and table columns
-    let create (displayName:string) area tableColumns = 
+    /// Creates a table from a name a area and tableColumns.
+    let create (displayName : string) area tableColumns = 
         let t = Table()
         let a = AutoFilter()
         a.Reference <- area
@@ -219,11 +223,10 @@ module Table =
         t.TableColumns <- TableColumns.create tableColumns
         t
 
-
-    /// Adds a created table to the worksheet
-    let addTable (worksheetPart:WorksheetPart) (table:Table) =
+    /// Adds a table to the worksheetPart.
+    let addTable (worksheetPart : WorksheetPart) (table : Table) =
         // https://stackoverflow.com/questions/53440352/openxml-table-creation-how-do-i-create-tables-without-requiring-excel-to-repa
-        printfn "start addTable"
+        printfn "Start addTable."
         let id = worksheetPart.TableDefinitionParts |> Seq.length |> (+) 1
         let tableDefinitionPart = worksheetPart.AddNewPart<TableDefinitionPart>(sprintf "rId%i" id);
         table.Id <- (UInt32Value.FromUInt32(uint id))
@@ -249,11 +252,11 @@ module Table =
         tableParts.Count <- tableParts.Count.Value |> (+) 1u |> UInt32Value.FromUInt32     
         tableParts.AppendChild(tablePart) |> ignore
 
-        printfn "%i" id
+        printfn "TableID: %i" id
         worksheetPart
 
     /// Create a table object by an area. If the first row of this area contains values in the given sheet, these are chosen as headers for the table and a table is returned.
-    let tryCreateWithExistingHeaders (sst:SharedStringTable Option) sheetData name area =
+    let tryCreateWithExistingHeaders (sst : SharedStringTable Option) sheetData name area =
         if Area.isCorrect area then
             try 
                 let columns = 
@@ -272,26 +275,26 @@ module Table =
         else None
 
 
-    /// Returns the headers of the columns
-    let getColumnHeaders (table:Table) = 
+    /// Returns the headers of the columns.
+    let getColumnHeaders (table : Table) = 
         table.TableColumns
         |> TableColumns.getTableColumns
         |> Seq.map (TableColumn.getName)
 
-    /// Returns the tableColumn for which the predicate returns true
-    let tryGetTableColumnBy (predicate : TableColumn -> bool) (table:Table) =
+    /// Returns the tableColumn for which the predicate returns true if it exists. Else returns None.
+    let tryGetTableColumnBy (predicate : TableColumn -> bool) (table : Table) =
         table.TableColumns
         |> TableColumns.getTableColumns
         |> Seq.tryFind predicate
 
-    /// If a tableColumn with the given name exists in the table, returns it
-    let tryGetTableColumnByName name (table:Table) =
+    /// If a tableColumn with the given name exists in the table, returns it. Else returns None.
+    let tryGetTableColumnByName name (table : Table) =
         table.TableColumns
         |> TableColumns.getTableColumns
         |> Seq.tryFind (TableColumn.getName >> (=) name)
 
-    /// If a column with the given header exists in the table, returns its values
-    let tryGetColumnValuesByColumnHeader (sst:SharedStringTable Option) sheetData columnHeader (table:Table) =
+    /// If a column with the given header exists in the table, returns its values. Else returns None.
+    let tryGetColumnValuesByColumnHeader (sst : SharedStringTable Option) sheetData columnHeader (table : Table) =
         let area = getArea table
         table.TableColumns
         |> TableColumns.getTableColumns
@@ -299,11 +302,11 @@ module Table =
         |> Option.map (fun i ->
             let columnIndex =  (Area.leftBoundary area) + (uint i)
             [(Area.upperBoundary area + 1u) .. Area.lowerBoundary area]
-            |> List.choose (fun r -> SheetData.tryGetCellValueAt sst r columnIndex sheetData)           
+            |> List.choose (fun r -> SheetData.tryGetCellValueAt sst r columnIndex sheetData)
         )
      
-    /// If a column with the given header exists in the table, returns its indexed values
-    let tryGetIndexedColumnValuesByColumnHeader (sst:SharedStringTable Option) sheetData columnHeader (table:Table) =
+    /// If a column with the given header exists in the table, returns its indexed values. Else returns None.
+    let tryGetIndexedColumnValuesByColumnHeader (sst : SharedStringTable Option) sheetData columnHeader (table : Table) =
         let area = getArea table
         table.TableColumns
         |> TableColumns.getTableColumns
@@ -316,11 +319,11 @@ module Table =
                 match SheetData.tryGetCellValueAt sst r columnIndex sheetData with
                 | Some v -> Some (i,v)
                 | None -> None
-            )           
-        )         
+            )
+        )
 
-    /// If a key column and a value with the given header exist in the table, returns a tuple list of keys and values. Missing values get replaced with the given default value
-    let tryGetKeyValuesByColumnHeaders (sst:SharedStringTable Option) sheetData keyColHeader valColHeader defaultValue (table:Table) =
+    /// If a key column and a value with the given header exist in the table, returns a tuple list of keys and values (else returns None). Missing values get replaced with the given default value.
+    let tryGetKeyValuesByColumnHeaders (sst : SharedStringTable Option) sheetData keyColHeader valColHeader defaultValue (table : Table) =
         let area = getArea table
         let tableCols = 
             table.TableColumns
@@ -339,7 +342,7 @@ module Table =
         | _ -> None
 
     /// Reads a complete table. Values are stored sparsely in a dictionary, with the key being a column header and row index tuple.
-    let toSparseValueMatrix (sst:SharedStringTable Option) sheetData (table:Table) =
+    let toSparseValueMatrix (sst : SharedStringTable Option) sheetData (table : Table) =
         let area = getArea table
         let dictionary = System.Collections.Generic.Dictionary<string*int,string>()
         [Area.leftBoundary area .. Area.rightBoundary area]

@@ -4,30 +4,30 @@ open DocumentFormat.OpenXml
 open DocumentFormat.OpenXml.Spreadsheet
 
 
-/// Functions for creating and manipulating cells
+/// Functions for creating and manipulating Cells.
 module Cell =
 
 
-    /// Functions for manipulating CellValues
+    /// Functions for manipulating CellValues.
     module CellValue = 
 
-        /// Empty cellvalue
+        /// Creates an empty CellValue.
         let empty() = CellValue()
 
-        /// Create a new cellValue containing the given string
-        let create (value:string) = CellValue(value)
+        /// Create a new cellValue containing the given string.
+        let create (value : string) = CellValue(value)
 
-        /// Returns the value stored inside the cellValue
-        let getValue (cellValue:CellValue) = cellValue.Text
+        /// Returns the value stored inside the CellValue.
+        let getValue (cellValue : CellValue) = cellValue.Text
 
-        /// Sets the value inside the cellValue
-        let setValue (value:string) (cellValue:CellValue) =  cellValue.Text <- value
+        /// Sets the value inside the CellValue.
+        let setValue (value : string) (cellValue : CellValue) =  cellValue.Text <- value
 
 
-    /// Empty cell
+    /// Creates an empty cell.
     let empty () = Cell()
 
-    /// Returns the proper CellValues case for the given value
+    /// Returns the proper CellValues case for the given value.
     let inferCellValue (value : 'T) = 
         let value = box value
         match value with
@@ -48,13 +48,13 @@ module Cell =
         | :? System.DateTime as d -> CellValues.Date,d.Date.ToString()
         | _ ->  CellValues.String,value.ToString()
 
-    /// Creates a cell, from a CellValues type case, a "A1" style reference and a cellValue containing the value string
-    let create (dataType : CellValues) (reference:string) (value:CellValue) = 
+    /// Creates a cell from a CellValues type case, a "A1" style reference, and a CellValue containing the value string.
+    let create (dataType : CellValues) (reference : string) (value : CellValue) = 
         Cell(CellReference = StringValue.FromString reference, DataType = EnumValue(dataType), CellValue = value)
 
 
     /// Create a cell using a shared string table, also returns the updated shared string table.
-    let fromValue (sharedStringTable: SharedStringTable Option) columnIndex rowIndex (value:'T) = 
+    let fromValue (sharedStringTable : SharedStringTable Option) columnIndex rowIndex (value : 'T) = 
         let value = box value
         match value with
         | :? string as s when sharedStringTable.IsSome-> 
@@ -81,40 +81,40 @@ module Cell =
            let reference = CellReference.ofIndices columnIndex (rowIndex)
            create valType reference (CellValue.create value)
 
-    /// Gets "A1"-Style cell reference
-    let getReference (cell:Cell) = cell.CellReference.Value
+    /// Gets "A1"-style cell reference.
+    let getReference (cell : Cell) = cell.CellReference.Value
 
-    /// Sets "A1"-Style cell reference
-    let setReference (reference) (cell:Cell) = 
+    /// Sets "A1"-style cell reference.
+    let setReference (reference) (cell : Cell) = 
         cell.CellReference <- StringValue.FromString reference
         cell
 
-    /// Gets Some type if existent. Else returns None
-    let tryGetType (cell:Cell) = 
+    /// Gets Some type if existent. Else returns None.
+    let tryGetType (cell : Cell) = 
         if cell.DataType <> null then
             Some cell.DataType.Value
         else
             None
     
-    /// Gets Cell type
-    let getType (cell:Cell) = cell.DataType.Value
+    /// Gets a Cell type.
+    let getType (cell : Cell) = cell.DataType.Value
 
-    /// sets Cell type
-    let setType (dataType:CellValues) (cell:Cell) = 
+    /// Sets a Cell type.
+    let setType (dataType : CellValues) (cell : Cell) = 
         cell.DataType <- EnumValue(dataType)
         cell
 
-    /// Gets Some cellValue if cellValue is existent. Else returns None
-    let tryGetCellValue (cell:Cell) = 
+    /// Gets Some CellValue if cellValue is existent. Else returns None.
+    let tryGetCellValue (cell : Cell) = 
         if cell.CellValue <> null then
             Some cell.CellValue
         else
             None
 
-    /// Gets cellValue
-    let getCellValue (cell:Cell) = cell.CellValue
+    /// Gets the CellValue.
+    let getCellValue (cell : Cell) = cell.CellValue
     
-    /// Maps a cell to the value string using a shared string table
+    /// Maps a cell to the value string using a shared string table.
     let tryGetValue (sharedStringTable:SharedStringTable Option) (cell:Cell) =
         match cell |> tryGetType with
         | Some (CellValues.SharedString) when sharedStringTable.IsSome->
@@ -135,8 +135,8 @@ module Cell =
 
 
 
-    /// Maps a cell to the value string using a shared string table
-    let getValue (sharedStringTable:SharedStringTable Option) (cell:Cell) =
+    /// Maps a Cell to the value string using a sharedStringTable.
+    let getValue (sharedStringTable : SharedStringTable Option) (cell : Cell) =
         match cell |> tryGetType with
         | Some (CellValues.SharedString) when sharedStringTable.IsSome->
             let sharedStringTable = sharedStringTable.Value
@@ -155,12 +155,12 @@ module Cell =
             |> getCellValue
             |> CellValue.getValue   
 
-    /// Sets cellValue
-    let setValue (value:CellValue) (cell:Cell) = 
+    /// Sets a CellValue.
+    let setValue (value : CellValue) (cell : Cell) = 
         cell.CellValue <- value
         cell
 
-    /// Includes value from SharedStringTable in Cell.CellValue.Text
+    /// Includes a value from the sharedStringTable in Cell.CellValue.Text.
     let includeSharedStringValue (sharedStringTable:SharedStringTable) (cell:Cell) =
         if not (isNull cell.DataType) then  
             match cell |> tryGetType with

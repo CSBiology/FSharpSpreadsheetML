@@ -4,33 +4,33 @@ open DocumentFormat.OpenXml.Spreadsheet
 open DocumentFormat.OpenXml.Packaging
 
 /// Stores data of the sheet and the index of the sheet and
-/// functions for working with the worksheetpart (Unmanaged: changing a worksheet does not alter the sheet which links the worksheet to the excel workbook)
+/// functions for working with the worksheetpart. (Unmanaged: changing a worksheet does not alter the sheet which links the worksheet to the excel workbook)
 module Worksheet = 
 
     /// Empty Worksheet
     let empty() = Worksheet()
 
-    /// Associates a sheetData with the worksheet
+    /// Associates a sheetData with the worksheet.
     let addSheetData (sheetData:SheetData) (worksheet:Worksheet) = 
         worksheet.AppendChild sheetData |> ignore
         worksheet
 
-    /// Returns true, if the worksheet contains sheetdata
+    /// Returns true, if the worksheet contains sheetdata.
     let hasSheetData (worksheet:Worksheet) = 
         worksheet.HasChildren
 
-    /// Creates a worksheet containing the given sheetdata
+    /// Creates a worksheet containing the given sheetdata.
     let ofSheetData (sheetData:SheetData) = 
         Worksheet(sheetData)
 
-    /// Returns the sheetdata associated with the worksheet
+    /// Returns the sheetdata associated with the worksheet.
     let getSheetData (worksheet:Worksheet) = 
         worksheet.GetFirstChild<SheetData>()
       
     //let setSheetData (sheetData:SheetData) (worksheet:Worksheet) = worksheet.sh
 
 
-    // Returns the worksheet associated with the worksheetpart
+    // Returns the worksheet associated with the worksheetpart.
     let get (worksheetPart : WorksheetPart) = 
         worksheetPart.Worksheet
 
@@ -39,12 +39,12 @@ module Worksheet =
         worksheetPart.Worksheet <- worksheet
         worksheetPart
 
-    /// Associates an empty worksheet with the worksheetpart
+    /// Associates an empty worksheet with the worksheetpart.
     let init (worksheetPart:WorksheetPart) = 
         worksheetPart
         |> setWorksheet (empty())
 
-    /// Returns the existing or a newly created worksheet associated with the worksheetpart
+    /// Returns the existing or a newly created worksheet associated with the worksheetpart.
     let getOrInit (worksheetPart:WorksheetPart) =
         if worksheetPart.Worksheet <> null then
             get worksheetPart
@@ -53,15 +53,19 @@ module Worksheet =
             |> init
             |> get
 
+    /// Functions for extracting / working with WorksheetParts.
     module WorksheetPart = 
 
-        /// Returns the worksheetpart matching the given id
+        /// Returns the worksheetpart matching the given id.
         let getByID sheetID (workbookPart : WorkbookPart) = 
             workbookPart.GetPartById(sheetID) :?> WorksheetPart  
             
-        /// Returns the sheetData associated witht the worksheetpart
+        /// Returns the sheetData associated with the worksheetpart.
         let getSheetData (worksheetPart : WorksheetPart) =
             get worksheetPart |> getSheetData
+
+
+            
 
 
     //let insertCellData (cell:CellData.CellDataValue) (worksheet : Worksheet) =
