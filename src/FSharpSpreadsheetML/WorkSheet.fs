@@ -64,8 +64,34 @@ module Worksheet =
         let getSheetData (worksheetPart : WorksheetPart) =
             get worksheetPart |> getSheetData
 
+        /// Returns the worksheetCommentsPart associated with a worksheetPart.
+        let getWorksheetCommentsPart (worksheetPart : WorksheetPart) = worksheetPart.WorksheetCommentsPart
 
-            
+    /// Functions for extracting / working with WorksheetCommentsParts.
+    module WorksheetCommentsPart =
+        
+        /// Returns the worksheetCommentsPart associated with a worksheetPart.
+        let get (worksheetPart : WorksheetPart) = WorksheetPart.getWorksheetCommentsPart worksheetPart
+        
+        /// Returns the comments of the worksheetCommentsPart.
+        let getComments (worksheetCommentsPart : WorksheetCommentsPart) = worksheetCommentsPart.Comments
+
+    /// Functions for working with Comments.
+    module Comments =
+        
+        /// Returns the comments of the worksheetCommentsPart.
+        let get (worksheetCommentsPart : WorksheetCommentsPart) = worksheetCommentsPart.Comments
+
+        /// Returns the commentList of the given comments.
+        let getCommentList (comments : Comments) = comments.CommentList
+
+        /// <summary>Returns a sequence of author names from the comments.</summary>
+        /// <remarks>Author names might be encrypted in the pattern of <code>tc={...}</code></remarks>
+        let getAuthors (comments : Comments) = comments.Authors |> Seq.map (fun a -> a.InnerText)
+
+        /// 
+        let getCommentTexts (commentList : CommentList) = 
+            commentList |> Seq.map (fun c -> c.InnerText)
 
 
     //let insertCellData (cell:CellData.CellDataValue) (worksheet : Worksheet) =
