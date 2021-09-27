@@ -298,7 +298,7 @@ module SheetData =
 //                                                Sheet(s)                                                                 
 //----------------------------------------------------------------------------------------------------------------------
 
-    /// Reads the values of all cells from a sheetData and a sharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a column index and row index tuple.
+    /// Reads the values of all cells from a sheetData and a sharedStringTable and converts them into a sparse matrix. Values are stored sparsely in a dictionary, with the key being a row index and column index tuple.
     let toSparseValueMatrix (sst : SharedStringTable) sheetData =
         let rows = getRows sheetData
         let noOfRows = countRows sheetData
@@ -323,6 +323,6 @@ module SheetData =
                 // this rowIndex on the other hand is the real row index since there might be rows not occupied with values (empty rows) in between
                 let rowIndex = Seq.item iR rows |> Row.getIndex
                 match tryGetCellValueAt (Some sst) rowIndex columnIndex sheetData with
-                | Some v -> dict.Add((int columnIndex,int rowIndex),v)
+                | Some v -> dict.Add((int rowIndex,int columnIndex),v)
                 | None -> ()
         dict

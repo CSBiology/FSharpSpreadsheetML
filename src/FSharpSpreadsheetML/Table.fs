@@ -341,10 +341,10 @@ module Table =
             |> Some
         | _ -> None
 
-    /// Reads a complete table. Values are stored sparsely in a dictionary, with the key being a column header and row index tuple.
+    /// Reads a complete table. Values are stored sparsely in a dictionary, with the key being a row index and column header tuple.
     let toSparseValueMatrix (sst : SharedStringTable Option) sheetData (table : Table) =
         let area = getArea table
-        let dictionary = System.Collections.Generic.Dictionary<string*int,string>()
+        let dictionary = System.Collections.Generic.Dictionary<int*string,string>()
         [Area.leftBoundary area .. Area.rightBoundary area]
         |> List.iter (fun c ->
             let upperBoundary = Area.upperBoundary area
@@ -353,7 +353,7 @@ module Table =
             List.init (lowerBoundary - upperBoundary |> int) (fun i ->
                 let r = uint i + upperBoundary + 1u
                 match SheetData.tryGetCellValueAt sst r c sheetData with
-                | Some v -> dictionary.Add((header,i),v)
+                | Some v -> dictionary.Add((i,header),v)
                 | None -> ()                              
             )
             |> ignore
