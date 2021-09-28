@@ -6,48 +6,49 @@ open DocumentFormat.OpenXml.Spreadsheet
 
 
 
-/// Functions for working the spreadsheet document
+/// Functions for working the spreadsheet document.
 module Spreadsheet = 
 
-    /// Opens the spreadsheet located at the given path
-    let fromFile (path:string) isEditable = SpreadsheetDocument.Open(path,isEditable)
+    /// Opens the spreadsheet located at the given path and initialized a FileStream.
+    let fromFile (path : string) isEditable = SpreadsheetDocument.Open(path,isEditable)
 
-    /// Opens the spreadsheet located at the given path
-    let fromStream (stream:System.IO.Stream) isEditable = SpreadsheetDocument.Open(stream,isEditable)
+    /// Opens the spreadsheet from the given FileStream.
+    let fromStream (stream : System.IO.Stream) isEditable = SpreadsheetDocument.Open(stream,isEditable)
 
-    /// Initializes a new empty spreadsheet at the given path
-    let initEmpty (path:string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
+    /// Initializes a new empty spreadsheet at the given path.
+    let initEmpty (path : string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
 
-    // Gets the workbookpart of the spreadsheet
-    let getWorkbookPart (spreadsheet:SpreadsheetDocument) = spreadsheet.WorkbookPart
+    // Gets the workbookPart of the spreadsheet.
+    let getWorkbookPart (spreadsheet : SpreadsheetDocument) = spreadsheet.WorkbookPart
 
     // Only if none there
-    let initWorkbookPart (spreadsheet:SpreadsheetDocument) = spreadsheet.AddWorkbookPart()
+    /// Initialized a new workbookPart in the spreadsheetDocument but only if there is none.
+    let initWorkbookPart (spreadsheet : SpreadsheetDocument) = spreadsheet.AddWorkbookPart()
 
-    /// Save changes made to the spreadsheet
-    let saveChanges (spreadsheet:SpreadsheetDocument) = 
+    /// Saves changes made to the spreadsheet.
+    let saveChanges (spreadsheet : SpreadsheetDocument) = 
         spreadsheet.Save() 
         spreadsheet
 
-    /// Closes the stream to the spreadsheet
-    let close (spreadsheet:SpreadsheetDocument) = spreadsheet.Close()
+    /// Closes the FileStream to the spreadsheet.
+    let close (spreadsheet : SpreadsheetDocument) = spreadsheet.Close()
 
-    /// Save changes made to the spreadsheet to the given path
-    let saveAs path (spreadsheet:SpreadsheetDocument) = 
+    /// Saves changes made to the spreadsheet to the given path.
+    let saveAs path (spreadsheet : SpreadsheetDocument) = 
         spreadsheet.SaveAs(path) :?> SpreadsheetDocument
         |> close
         spreadsheet
 
-    /// Initializes a new spreadsheet with an empty sheet at the given path
-    let init sheetName (path:string) = 
+    /// Initializes a new spreadsheet with an empty sheet at the given path.
+    let init sheetName (path : string) = 
         let doc = initEmpty path
         let workbookPart = initWorkbookPart doc
 
         WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
         doc
 
-    /// Initializes a new spreadsheet with an empty sheet and a sharedStringTable at the given path
-    let initWithSST sheetName (path:string) = 
+    /// Initializes a new spreadsheet with an empty sheet and a sharedStringTable at the given path.
+    let initWithSst sheetName (path : string) = 
         let doc = init sheetName path
         let workbookPart = getWorkbookPart doc
 
@@ -56,53 +57,52 @@ module Spreadsheet =
 
         doc
 
-    // Get the SharedStringTable
-    let getSharedStringTable (spreadsheetDocument:SpreadsheetDocument) =
+    // Gets the sharedStringTable of a spreadsheet.
+    let getSharedStringTable (spreadsheetDocument : SpreadsheetDocument) =
         spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable
 
-    // Get the SharedStringTable if it exists
-    let tryGetSharedStringTable (spreadsheetDocument:SpreadsheetDocument) =
+    // Gets the sharedStringTable of the spreadsheet if it exists, else returns None.
+    let tryGetSharedStringTable (spreadsheetDocument : SpreadsheetDocument) =
         try spreadsheetDocument.WorkbookPart.SharedStringTablePart.SharedStringTable |> Some
         with | _ -> None
 
-    // Get the SharedStringTablePart. If it does not exist, create a new one.
-    let getOrInitSharedStringTablePart (spreadsheetDocument:SpreadsheetDocument) =
+    // Gets the sharedStringTablePart. If it does not exist, creates a new one.
+    let getOrInitSharedStringTablePart (spreadsheetDocument : SpreadsheetDocument) =
         let workbookPart = spreadsheetDocument.WorkbookPart    
         let sstp = workbookPart.GetPartsOfType<SharedStringTablePart>()
         match sstp |> Seq.tryHead with
         | Some sst -> sst
         | None -> workbookPart.AddNewPart<SharedStringTablePart>()
 
-    /// Returns the worksheetPart associated to the sheet with the given name
-    let tryGetWorksheetPartBySheetName (name:string) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns the worksheetPart associated to the sheet with the given name.
+    let tryGetWorksheetPartBySheetName (name : string) (spreadsheetDocument : SpreadsheetDocument) =
         Sheet.tryItemByName name spreadsheetDocument
         |> Option.map (fun sheet -> 
             spreadsheetDocument.WorkbookPart
             |> Worksheet.WorksheetPart.getByID sheet.Id.Value 
         )      
 
-    /// Returns the worksheetPart for the given 0 based sheetIndex of the given spreadsheetDocument. 
-    let tryGetWorksheetPartBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns the worksheetPart for the given 0-based sheetIndex of the given spreadsheetDocument. 
+    let tryGetWorksheetPartBySheetIndex (sheetIndex : uint) (spreadsheetDocument : SpreadsheetDocument) =
         Sheet.tryItem sheetIndex spreadsheetDocument
         |> Option.map (fun sheet -> 
             spreadsheetDocument.WorkbookPart
             |> Worksheet.WorksheetPart.getByID sheet.Id.Value 
         )   
         
-    /// Returns the sheetData for the given 0 based sheetIndex of the given spreadsheetDocument. 
-    let tryGetSheetBySheetName (name:string) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns the sheetData for the given 0-based sheetIndex of the given spreadsheetDocument if it exists. Else returns None.
+    let tryGetSheetBySheetName (name : string) (spreadsheetDocument : SpreadsheetDocument) =
         tryGetWorksheetPartBySheetName name spreadsheetDocument
         |> Option.map (Worksheet.get >> Worksheet.getSheetData)
 
-    /// Returns the sheetData for the given 0 based sheetIndex of the given spreadsheetDocument. 
-    let tryGetSheetBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns the sheetData for the given 0-based sheetIndex of the given spreadsheetDocument. 
+    let tryGetSheetBySheetIndex (sheetIndex : uint) (spreadsheetDocument : SpreadsheetDocument) =
         tryGetWorksheetPartBySheetIndex sheetIndex spreadsheetDocument
         |> Option.map (Worksheet.get >> Worksheet.getSheetData)
         
 
-
-    /// Returns a sequence of rows containing the cells for the given 0 based sheetIndex of the given spreadsheetDocument. 
-    let getRowsBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns a sequence of rows containing the cells for the given 0-based sheetIndex of the given spreadsheetDocument. 
+    let getRowsBySheetIndex (sheetIndex : uint) (spreadsheetDocument : SpreadsheetDocument) =
 
         match (Sheet.tryItem sheetIndex spreadsheetDocument) with
         | Some (sheet) ->
@@ -124,8 +124,8 @@ module Spreadsheet =
             }
         | None -> Seq.empty
 
-    /// Returns a 1D sequence of cells for the given sheetIndex of the given spreadsheetDocument. 
-    let getCellsBySheetIndex (sheetIndex:uint) (spreadsheetDocument:SpreadsheetDocument) =
+    /// Returns a 1D-sequence of cells for the given sheetIndex of the given spreadsheetDocument. 
+    let getCellsBySheetIndex (sheetIndex : uint) (spreadsheetDocument : SpreadsheetDocument) =
 
         match (Sheet.tryItem sheetIndex spreadsheetDocument) with
         | Some (sheet) ->
