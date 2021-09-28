@@ -1,3 +1,12 @@
+### 0.0.7+a911b33 (Released 2021-9-28)
+* Additions:
+    * latest commit #a911b33
+    * [[#0f4e071](https://github.com/CSBiology/FSharpSpreadsheetML/commit/0f4e071c197ca46deb8acdb48580fc4cea57405f)] Add comment functions (pre-state)
+    * [[#1606528](https://github.com/CSBiology/FSharpSpreadsheetML/commit/1606528c6defc5cbddaa5947a18dd222b80e7ea8)] Change index tuple order in toSparseValueMatrix functions
+    * [[#d90187e](https://github.com/CSBiology/FSharpSpreadsheetML/commit/d90187ef5ebc76aca6075d38ccddc92f55e92e01)] add CI and issue templates
+* Bugfixes:
+    * [[#beafdd5](https://github.com/CSBiology/FSharpSpreadsheetML/commit/beafdd5a6a67b0095bbee85eea508d441d57c0d1)] Fix typos. Unify phrasing.
+
 ### 0.0.6+ff260d6 (Released 2021-9-7)
 * Additions:
     * latest commit #ff260d6
