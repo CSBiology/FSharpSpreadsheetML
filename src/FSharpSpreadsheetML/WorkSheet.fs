@@ -11,20 +11,20 @@ module Worksheet =
     let empty() = Worksheet()
 
     /// Associates a sheetData with the worksheet.
-    let addSheetData (sheetData:SheetData) (worksheet:Worksheet) = 
+    let addSheetData (sheetData : SheetData) (worksheet : Worksheet) = 
         worksheet.AppendChild sheetData |> ignore
         worksheet
 
     /// Returns true, if the worksheet contains sheetdata.
-    let hasSheetData (worksheet:Worksheet) = 
+    let hasSheetData (worksheet : Worksheet) = 
         worksheet.HasChildren
 
     /// Creates a worksheet containing the given sheetdata.
-    let ofSheetData (sheetData:SheetData) = 
+    let ofSheetData (sheetData : SheetData) = 
         Worksheet(sheetData)
 
     /// Returns the sheetdata associated with the worksheet.
-    let getSheetData (worksheet:Worksheet) = 
+    let getSheetData (worksheet : Worksheet) = 
         worksheet.GetFirstChild<SheetData>()
       
     //let setSheetData (sheetData:SheetData) (worksheet:Worksheet) = worksheet.sh
@@ -40,12 +40,12 @@ module Worksheet =
         worksheetPart
 
     /// Associates an empty worksheet with the worksheetpart.
-    let init (worksheetPart:WorksheetPart) = 
+    let init (worksheetPart : WorksheetPart) = 
         worksheetPart
         |> setWorksheet (empty())
 
     /// Returns the existing or a newly created worksheet associated with the worksheetpart.
-    let getOrInit (worksheetPart:WorksheetPart) =
+    let getOrInit (worksheetPart : WorksheetPart) =
         if worksheetPart.Worksheet <> null then
             get worksheetPart
         else 
@@ -76,6 +76,7 @@ module Worksheet =
         /// Returns the comments of the worksheetCommentsPart.
         let getComments (worksheetCommentsPart : WorksheetCommentsPart) = worksheetCommentsPart.Comments
 
+    // TO DO: Atm. both types of comments (REAL comments and notes) are mixed. They seem to only differ in terms of their text: Comments have a disclaimer like "Comment:" or "Reply:" (the latter if it's a reply to a comment) while notes do not have that BUT have text formatting (can be seen in comments.xml in .xlsx archives))
     /// Functions for working with Comments.
     module Comments =
         
@@ -89,9 +90,46 @@ module Worksheet =
         /// <remarks>Author names might be encrypted in the pattern of <code>tc={...}</code></remarks>
         let getAuthors (comments : Comments) = comments.Authors |> Seq.map (fun a -> a.InnerText)
 
-        /// 
-        let getCommentTexts (commentList : CommentList) = 
+        /// Returns all comments and notes as strings of a commentList.
+        let getCommentAndNoteTexts (commentList : CommentList) = 
             commentList |> Seq.map (fun c -> c.InnerText)
+
+        /// Returns a triple of comments consisting of the author, the comment text written, and the cell reference (A1-style).
+        let getCommentsAuthorsTextsRefs (comments : Comments) =
+            let authors = comments.Authors.Elements<DocumentFormat.OpenXml.Spreadsheet.Author>()
+            let refsAuthorsTexts = 
+                comments.CommentList.Elements<Comment>() 
+                |> Seq.choose (
+                    fun c ->
+                        match c.CommentText.Text with
+                        | null -> None
+                        | _ -> 
+                            Some (
+                                c.Reference.Value,
+                                (Seq.item (int c.AuthorId.Value) authors).Text,
+                                c.CommentText.Text.InnerText
+                            )
+                )
+            refsAuthorsTexts
+
+        /// Returns a triple of notes consisting of the author, the note text written, and the cell reference (A1-style).
+        let getNotesAuthorsTextsRefs (comments : Comments) =
+            let authors = comments.Authors.Elements<DocumentFormat.OpenXml.Spreadsheet.Author>()
+            let refsAuthorsTexts = 
+                comments.CommentList.Elements<Comment>() 
+                |> Seq.choose (
+                    fun c ->
+                        match c.CommentText.Text with
+                        | null -> 
+                            Some (
+                                c.Reference.Value,
+                                (Seq.item (int c.AuthorId.Value) authors).Text,
+                                c.CommentText.Text.InnerText
+                            )
+
+                        | _ -> None
+                )
+            refsAuthorsTexts
 
 
     //let insertCellData (cell:CellData.CellDataValue) (worksheet : Worksheet) =
