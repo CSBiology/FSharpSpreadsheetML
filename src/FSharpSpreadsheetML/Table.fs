@@ -167,6 +167,11 @@ module Table =
             tc.Id <- UInt32Value(id)
             tc
 
+    /// Returns a table for which the predicate applied to its name returns true.
+    let getByNameBy (predicate : string -> bool) (worksheetPart : WorksheetPart) =
+        worksheetPart.TableDefinitionParts
+        |> Seq.pick (fun t -> if predicate t.Table.Name.Value then Some t.Table else None)
+    
     /// If a table exists, for which the predicate applied to its name returns true, gets it. Else returns None.
     let tryGetByNameBy (predicate : string -> bool) (worksheetPart : WorksheetPart) =
         worksheetPart.TableDefinitionParts
