@@ -354,7 +354,7 @@ module Row =
         match refCell with
         | Some ref when Cell.getReference ref = Cell.getReference cell ->
             ref  |> Cell.setType (Cell.getType cell)  |> ignore
-            ref |> Cell.setValue ((Cell.getValue sst cell).Clone() :?> CellValue) |> ignore
+            ref |> Cell.setValue ((Cell.getCellValue cell).Clone() :?> CellValue) |> ignore
             row 
         | Some ref -> 
             row |> insertCellBefore cell ref
