@@ -275,6 +275,16 @@ module Row =
         |> toCellSeq
         |> Seq.map (Cell.getValue sst)
 
+    /// Maps each cell of the given row to each respective value strings if it exists, else returns None.
+    let tryGetRowValues (sst : SharedStringTable option) (row : Row) =
+        toCellSeq row
+        |> Seq.map (Cell.tryGetValue sst)
+
+    /// Maps the cells of the given row to the value strings for all existing cells.
+    let getPresentRowValues (sst : SharedStringTable option) (row : Row) =
+        toCellSeq row
+        |> Seq.choose (Cell.tryGetValue sst)
+
     
     /// Adds a value as a cell to the row at the given columnIndex.
     ///
