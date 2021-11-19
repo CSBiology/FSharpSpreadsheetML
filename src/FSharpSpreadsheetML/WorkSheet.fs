@@ -12,7 +12,14 @@ module Worksheet =
 
     /// Associates a sheetData with the worksheet.
     let addSheetData (sheetData : SheetData) (worksheet : Worksheet) = 
-        worksheet.AppendChild sheetData |> ignore
+        let children = worksheet.ChildElements
+        let posPageMargins =
+            children
+            |> Seq.tryFindIndex (fun c -> c.LocalName = "pageMargins")
+        match posPageMargins with
+        | Some pos  -> worksheet.InsertAt(sheetData, pos)
+        | None      -> worksheet.AppendChild(sheetData)
+        |> ignore
         worksheet
 
     /// Returns true, if the worksheet contains sheetdata.
