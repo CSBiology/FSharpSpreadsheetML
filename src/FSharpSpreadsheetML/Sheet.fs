@@ -20,9 +20,12 @@ module Sheet =
         /// Returns all sheets of the sheets.
         let getSheets (sheets : Sheets) = sheets.Elements<Sheet>()
 
-        /// Adds a list of sheets to the sheets.
+        /// Adds a single Sheet to the Sheets.
+        let addSheet (newSheet : Sheet) (sheets : Sheets) = sheets.AppendChild newSheet
+        
+        /// Adds a Sheet collection to the Sheets.
         let addSheets (newSheets : Sheet seq) (sheets : Sheets) = 
-            newSheets |> Seq.iter (fun sheet -> sheets.Append sheet) 
+            newSheets |> Seq.iter (fun sheet -> addSheet sheet sheets |> ignore) 
             sheets
 
 
