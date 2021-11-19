@@ -125,7 +125,7 @@ module WorkbookPart =
         workbookPart
 
     /// Replaces the SheetData of the Sheet with the given sheetname.
-    let replaceSheetData (sheetName : string) (data : SheetData) (workbookPart : WorkbookPart) =
+    let replaceSheetDataByName (sheetName : string) (data : SheetData) (workbookPart : WorkbookPart) =
 
         let workbook = Workbook.getOrInit  workbookPart
     
