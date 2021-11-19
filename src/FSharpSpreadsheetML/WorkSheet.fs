@@ -34,7 +34,12 @@ module Worksheet =
     let getSheetData (worksheet : Worksheet) = 
         worksheet.GetFirstChild<SheetData>()
       
-    //let setSheetData (sheetData:SheetData) (worksheet:Worksheet) = worksheet.sh
+    /// Sets the SheetData of a Worksheet.
+    let setSheetData (sheetData : SheetData) (worksheet : Worksheet) =
+        if hasSheetData worksheet then
+            worksheet.RemoveChild(getSheetData worksheet)
+            |> ignore
+        addSheetData sheetData worksheet
 
 
     // Returns the worksheet associated with the worksheetpart.
