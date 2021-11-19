@@ -1,3 +1,17 @@
+### 0.0.8+a16b154 (Released 2021-11-19)
+* Additions:
+    * latest commit #a16b154
+    * [[#d5f59be](https://github.com/CSBiology/FSharpSpreadsheetML/commit/d5f59bed51cc5f36b82e26aa37f856801ef5aec7)] Add Comment functionality, unify phrasing
+    * [[#83351a0](https://github.com/CSBiology/FSharpSpreadsheetML/commit/83351a099ff194ceba7190855066c4044d6d3b67)] Add `getRowValues` function derivatives
+    * [[#87463b9](https://github.com/CSBiology/FSharpSpreadsheetML/commit/87463b9f0bb5ed7e5c138e5f4cddec153e53eda7)] Add `Table.getByNameBy` function
+    * [[#9ed4af5](https://github.com/CSBiology/FSharpSpreadsheetML/commit/9ed4af50f4716340abafbf7a471afb396b287bd3)] Add `setSheetData` function
+* Bugfixes:
+    * [[#36ba61d](https://github.com/CSBiology/FSharpSpreadsheetML/commit/36ba61d7214b72e21b77754c6fc3f334ea5c74cc)] Fix #13
+    * [[#871b1d2](https://github.com/CSBiology/FSharpSpreadsheetML/commit/871b1d2380331cd843c089a6073a9604cef759e9)] Fix `addSheetData` bug
+    * [[#79ad25f](https://github.com/CSBiology/FSharpSpreadsheetML/commit/79ad25fd0637d613358bbe11fafe5ee1ea6ff7be)] Fix typos, unify wording
+    * [[#b932c88](https://github.com/CSBiology/FSharpSpreadsheetML/commit/b932c8828e67cbac99d32f2d84205a75a5eb5aa4)] Add `replaceSheetData` function, fix typos, unify wording/phrasing
+    * [[#a16b154](https://github.com/CSBiology/FSharpSpreadsheetML/commit/a16b1547d0f2ec8bfaaf9eafab3ec4010673d1f0)] fix Row.setValue function fixes #15
+
 ### 0.0.7+a911b33 (Released 2021-9-28)
 * Additions:
     * latest commit #a911b33
