@@ -10,41 +10,52 @@ module Worksheet =
     /// Empty Worksheet
     let empty() = Worksheet()
 
-    /// Associates a sheetData with the worksheet.
+    /// Associates a SheetData with the Worksheet.
     let addSheetData (sheetData : SheetData) (worksheet : Worksheet) = 
-        worksheet.AppendChild sheetData |> ignore
+        let children = worksheet.ChildElements
+        let posPageMargins =
+            children
+            |> Seq.tryFindIndex (fun c -> c.LocalName = "pageMargins")
+        match posPageMargins with
+        | Some pos  -> worksheet.InsertAt(sheetData, pos)
+        | None      -> worksheet.AppendChild(sheetData)
+        |> ignore
         worksheet
 
-    /// Returns true, if the worksheet contains sheetdata.
+    /// Returns true, if the Worksheet contains SheetData.
     let hasSheetData (worksheet : Worksheet) = 
         worksheet.HasChildren
 
-    /// Creates a worksheet containing the given sheetdata.
+    /// Creates a Worksheet containing the given SheetData.
     let ofSheetData (sheetData : SheetData) = 
         Worksheet(sheetData)
 
-    /// Returns the sheetdata associated with the worksheet.
+    /// Returns the sheetdata associated with the Worksheet.
     let getSheetData (worksheet : Worksheet) = 
         worksheet.GetFirstChild<SheetData>()
       
-    //let setSheetData (sheetData:SheetData) (worksheet:Worksheet) = worksheet.sh
+    /// Sets the SheetData of a Worksheet.
+    let setSheetData (sheetData : SheetData) (worksheet : Worksheet) =
+        if hasSheetData worksheet then
+            worksheet.RemoveChild(getSheetData worksheet)
+            |> ignore
+        addSheetData sheetData worksheet
 
-
-    // Returns the worksheet associated with the worksheetpart.
+    // Returns the Worksheet associated with the WorksheetPart.
     let get (worksheetPart : WorksheetPart) = 
         worksheetPart.Worksheet
 
-    /// Sets the given worksheet with the worksheetpart
+    /// Sets the given Worksheet with the WorksheetPart.
     let setWorksheet (worksheet : Worksheet) (worksheetPart : WorksheetPart) = 
         worksheetPart.Worksheet <- worksheet
         worksheetPart
 
-    /// Associates an empty worksheet with the worksheetpart.
+    /// Associates an empty Worksheet with the WworksheetPart.
     let init (worksheetPart : WorksheetPart) = 
         worksheetPart
         |> setWorksheet (empty())
 
-    /// Returns the existing or a newly created worksheet associated with the worksheetpart.
+    /// Returns the existing or a newly created Worksheet associated with the WorksheetPart.
     let getOrInit (worksheetPart : WorksheetPart) =
         if worksheetPart.Worksheet <> null then
             get worksheetPart
@@ -56,45 +67,45 @@ module Worksheet =
     /// Functions for extracting / working with WorksheetParts.
     module WorksheetPart = 
 
-        /// Returns the worksheetpart matching the given id.
+        /// Returns the WorksheetPart matching the given sheetID.
         let getByID sheetID (workbookPart : WorkbookPart) = 
             workbookPart.GetPartById(sheetID) :?> WorksheetPart  
             
-        /// Returns the sheetData associated with the worksheetpart.
+        /// Returns the SheetData associated with the WorksheetPart.
         let getSheetData (worksheetPart : WorksheetPart) =
             get worksheetPart |> getSheetData
 
-        /// Returns the worksheetCommentsPart associated with a worksheetPart.
+        /// Returns the WorksheetCommentsPart associated with a WorksheetPart.
         let getWorksheetCommentsPart (worksheetPart : WorksheetPart) = worksheetPart.WorksheetCommentsPart
 
     /// Functions for extracting / working with WorksheetCommentsParts.
     module WorksheetCommentsPart =
         
-        /// Returns the worksheetCommentsPart associated with a worksheetPart.
+        /// Returns the WorksheetCommentsPart associated with a WorksheetPart.
         let get (worksheetPart : WorksheetPart) = WorksheetPart.getWorksheetCommentsPart worksheetPart
         
-        /// Returns the comments of the worksheetCommentsPart.
+        /// Returns the comments of the WorksheetCommentsPart.
         let getComments (worksheetCommentsPart : WorksheetCommentsPart) = worksheetCommentsPart.Comments
 
     // TO DO: Atm. both types of comments (REAL comments and notes) are mixed. They seem to only differ in terms of their text: Comments have a disclaimer like "Comment:" or "Reply:" (the latter if it's a reply to a comment) while notes do not have that BUT have text formatting (can be seen in comments.xml in .xlsx archives))
     /// Functions for working with Comments.
     module Comments =
         
-        /// Returns the comments of the worksheetCommentsPart.
+        /// Returns the comments of the WorksheetCommentsPart.
         let get (worksheetCommentsPart : WorksheetCommentsPart) = worksheetCommentsPart.Comments
 
-        /// Returns the commentList of the given comments.
+        /// Returns the CommentList of the given Comments.
         let getCommentList (comments : Comments) = comments.CommentList
 
-        /// <summary>Returns a sequence of author names from the comments.</summary>
+        /// <summary>Returns a sequence of author names from the Comments.</summary>
         /// <remarks>Author names might be encrypted in the pattern of <code>tc={...}</code></remarks>
         let getAuthors (comments : Comments) = comments.Authors |> Seq.map (fun a -> a.InnerText)
 
-        /// Returns all comments and notes as strings of a commentList.
+        /// Returns all Comments and Notes as strings of a CommentList.
         let getCommentAndNoteTexts (commentList : CommentList) = 
             commentList |> Seq.map (fun c -> c.InnerText)
 
-        /// Returns a triple of comments consisting of the author, the comment text written, and the cell reference (A1-style).
+        /// Returns a triple of Comments consisting of the author, the comment text written, and the cell reference (A1-style).
         let getCommentsAuthorsTextsRefs (comments : Comments) =
             let authors = comments.Authors.Elements<DocumentFormat.OpenXml.Spreadsheet.Author>()
             let refsAuthorsTexts = 
@@ -112,7 +123,7 @@ module Worksheet =
                 )
             refsAuthorsTexts
 
-        /// Returns a triple of notes consisting of the author, the note text written, and the cell reference (A1-style).
+        /// Returns a triple of Notes consisting of the author, the note text written, and the cell reference (A1-style).
         let getNotesAuthorsTextsRefs (comments : Comments) =
             let authors = comments.Authors.Elements<DocumentFormat.OpenXml.Spreadsheet.Author>()
             let refsAuthorsTexts = 
