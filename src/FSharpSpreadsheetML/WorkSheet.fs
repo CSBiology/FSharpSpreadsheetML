@@ -169,3 +169,7 @@ module Worksheet =
     //let setID id (worksheetPart : WorksheetPart) = notImplemented()
     //let getID (worksheetPart : WorksheetPart) = notImplemented()
 
+// Type based on the type XLWorksheet used in ClosedXml
+type XWorksheet () =
+    
+    member self.Row(rowIndex) = XRow()

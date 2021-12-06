@@ -17,6 +17,7 @@
     <Compile Include="WorkSheet.fs" />
     <Compile Include="Workbook.fs" />
     <Compile Include="Spreadsheet.fs" />
+    <Compile Include="Excel.fs" />
   </ItemGroup>
 
   <ItemGroup>

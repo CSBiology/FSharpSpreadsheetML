@@ -57,3 +57,14 @@ module CellReference =
         |> fun (c,r) -> c, (int64 r) + (int64 amount) |> uint32
         ||> ofIndices
 
+type XAddress(address : string) =
+
+    let mutable _address = address
+
+    member self.Address 
+        with get() = _address
+        and set(address) = _address <- address
+
+    member self.OfIndices(colIndex,rowIndex) = _address <- CellReference.ofIndices colIndex rowIndex
+
+    member self.ToIndices() = _address |> CellReference.toIndices

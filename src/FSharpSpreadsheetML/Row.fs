@@ -370,3 +370,7 @@ module Row =
         row
         |> mapCells (Cell.includeSharedStringValue sst)
 
+// Type based on the type XLRow used in ClosedXml
+type XRow () = 
+
+    member self.Cell(index : int) = XCell()
