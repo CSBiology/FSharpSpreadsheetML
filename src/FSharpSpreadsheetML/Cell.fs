@@ -212,14 +212,14 @@ type XCell (value : string, dataType : DataType)=
     
     let mutable _cellValue = value
     let mutable _dataType = dataType
-    let mutable _comment  = raise (System.NotImplementedException())
-    let mutable _hyperlink = raise (System.NotImplementedException())
-    let mutable _richText = raise (System.NotImplementedException())
-    let mutable _formulaA1 = raise (System.NotImplementedException())
-    let mutable _formulaR1C1 = raise (System.NotImplementedException())
+    let mutable _comment  = ""
+    let mutable _hyperlink = ""
+    let mutable _richText = ""
+    let mutable _formulaA1 = ""
+    let mutable _formulaR1C1 = ""
 
-    let mutable _rowIndex : int = raise (System.NotImplementedException())
-    let mutable _columnIndex : int = raise (System.NotImplementedException())
+    let mutable _rowIndex : int = 0
+    let mutable _columnIndex : int = 0
 
     new () = XCell ("", DataType.Empty)
     new (value : string) = XCell (value, DataType.String)
@@ -261,7 +261,9 @@ type XCell (value : string, dataType : DataType)=
     /// The type of the cell's data.
     /// </value>
     /// <exception cref="ArgumentException"></exception>
-    member self.DataType = raise (System.NotImplementedException())
+    member self.DataType 
+        with get() = _dataType
+        and internal set(dataType) = _dataType <- dataType
     
     /// <summary>
     /// Gets or sets the cell's formula with A1 references.
@@ -384,7 +386,9 @@ type XCell (value : string, dataType : DataType)=
     
     //member self.CopyFrom(member self.otherCell);
     
-    member self.CopyFrom(otherCell) = raise (System.NotImplementedException())
+    member self.CopyFrom(otherCell : XCell) = 
+        self.DataType <- otherCell.DataType
+        self.Value <- otherCell.Value
     
     //member self.CopyTo(member self.target);
     

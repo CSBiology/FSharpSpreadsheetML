@@ -191,3 +191,4 @@ type XWorksheet (name) =
             _rows <- List.append _rows [row]
             row
         
+    member self.GetRows() = _rows

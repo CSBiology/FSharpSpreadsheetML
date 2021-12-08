@@ -2,6 +2,8 @@
 
 module internal Dictionary =
 
+    let seed = System.Random()
+
     let tryGetValue k (dict:System.Collections.Generic.Dictionary<'K,'V>) = 
         let b,v = dict.TryGetValue(k)
         // Only get value if 
@@ -14,6 +16,12 @@ module internal Dictionary =
     let length (dict:System.Collections.Generic.Dictionary<'K,'V>) = 
         dict.Count
 
+    let ranStr n = 
+        let r = System.Random(seed.Next())
+        let chars = Array.concat([[|'a' .. 'z'|];[|'A' .. 'Z'|];[|'0' .. '9'|]])
+        let sz = Array.length chars in
+        System.String(Array.init n (fun _ -> chars.[r.Next sz]))
+
 type FieldMap<'T> =
     {
         CellTransformers : ('T -> XCell -> XCell) list
@@ -21,6 +29,7 @@ type FieldMap<'T> =
         ColumnWidth : float option
         RowHeight : ('T -> float option) option
         AdjustToContents: bool
+        Hash : string
     }
     with
         static member empty<'T>() = {
@@ -29,11 +38,14 @@ type FieldMap<'T> =
             ColumnWidth = None
             RowHeight = None
             AdjustToContents = false
+            Hash = Dictionary.ranStr 10
         }
 
         static member create<'T>(mapRow: 'T -> XCell -> XCell) =
             let empty = FieldMap<'T>.empty()
-            { empty with CellTransformers = List.append empty.CellTransformers [mapRow] }
+            { empty with 
+                CellTransformers = List.append empty.CellTransformers [mapRow] 
+            }
 
         member self.header(name: string) =
             let transformer _ (cell: XCell) = cell.SetValue(name)

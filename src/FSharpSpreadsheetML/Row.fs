@@ -389,6 +389,8 @@ type XRow (index : int) =
             _cells <- List.append _cells [cell]
             cell
 
+    member self.GetCells() = _cells
+
     member self.Index 
         with get() = _index
         and set(i) = _index <- i

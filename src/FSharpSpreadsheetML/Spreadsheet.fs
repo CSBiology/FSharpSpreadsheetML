@@ -18,6 +18,9 @@ module Spreadsheet =
     /// Initializes a new empty spreadsheet at the given path.
     let initEmpty (path : string) = SpreadsheetDocument.Create(path, SpreadsheetDocumentType.Workbook)
 
+    /// Initializes a new empty spreadsheet in the given stream.
+    let initEmptyOnStream (stream : System.IO.Stream) = SpreadsheetDocument.Create(stream, SpreadsheetDocumentType.Workbook)
+
     // Gets the workbookPart of the spreadsheet.
     let getWorkbookPart (spreadsheet : SpreadsheetDocument) = spreadsheet.WorkbookPart
 
@@ -47,9 +50,27 @@ module Spreadsheet =
         WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
         doc
 
+    /// Initializes a new spreadsheet with an empty sheet in the given stream.
+    let initOnStream sheetName (stream : System.IO.Stream) = 
+        let doc = initEmptyOnStream stream
+        let workbookPart = initWorkbookPart doc
+
+        WorkbookPart.appendSheet sheetName (SheetData.empty ()) workbookPart |> ignore
+        doc
+
     /// Initializes a new spreadsheet with an empty sheet and a sharedStringTable at the given path.
     let initWithSst sheetName (path : string) = 
         let doc = init sheetName path
+        let workbookPart = getWorkbookPart doc
+
+        let sharedStringTablePart = WorkbookPart.getOrInitSharedStringTablePart workbookPart
+        SharedStringTable.init sharedStringTablePart |> ignore
+
+        doc
+
+    /// Initializes a new spreadsheet with an empty sheet and a sharedStringTable in the given stream.
+    let initWithSstOnStream sheetName (stream : System.IO.Stream) = 
+        let doc = initOnStream sheetName stream
         let workbookPart = getWorkbookPart doc
 
         let sharedStringTablePart = WorkbookPart.getOrInitSharedStringTablePart workbookPart
@@ -174,3 +195,51 @@ module Spreadsheet =
 
 
 
+    
+type XWorkbook() =
+    
+    let mutable worksheets = []
+    
+    member self.AddWorksheet(name : string) = 
+        let sheet = XWorksheet (name)
+        worksheets <- List.append worksheets [sheet]
+        sheet
+
+    member self.GetWorksheets() = worksheets
+
+    member self.SaveAs(stream : System.IO.MemoryStream) = 
+        let doc = Spreadsheet.initEmptyOnStream stream 
+
+        let workbookPart = Spreadsheet.initWorkbookPart doc
+
+        worksheets
+        |> List.iter (fun worksheet ->
+            let sheetData =                 
+                let sd = SheetData.empty()
+
+                worksheet.GetRows()
+                |> List.sortBy (fun row -> row.Index)
+                |> List.iter (fun row -> 
+                    let min,max = 
+                        row.GetCells() 
+                        |> List.map (fun cell -> uint32 cell.WorksheetColumn) 
+                        |> fun l -> List.min l, List.max l
+                    let cells = 
+                        row.GetCells()
+                        |> List.map (fun cell ->
+                            Cell.fromValue None (uint32 cell.WorksheetColumn) (uint32 cell.WorksheetRow) (cell.Value)
+                        )
+                    let row = Row.create (uint32 row.Index) (Row.Spans.fromBoundaries min max) cells
+                    SheetData.appendRow row sd |> ignore
+                ) 
+                sd
+            WorkbookPart.appendSheet worksheet.Name sheetData workbookPart |> ignore
+        )
+
+        Spreadsheet.close doc
+
+            
+    interface System.IDisposable with
+            
+        member self.Dispose() = ()
+    
