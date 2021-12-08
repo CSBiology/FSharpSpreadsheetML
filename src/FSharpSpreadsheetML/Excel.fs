@@ -100,13 +100,19 @@ type Excel() =
                 for header in field.HeaderTransformers do ignore (header row headerCell)
                 
                 let index = 
-                    match Dictionary.tryGetValue (headerCell.GetValue()) headers with
+                    let hasHeader, headerString = 
+                        if headerCell.GetValue() = "" then 
+                            false, field.Hash 
+                        else true, headerCell.GetValue()
+                    printfn "%b,%s" hasHeader headerString
+                    match Dictionary.tryGetValue (headerString) headers with
                     | Some int -> int
                     | None ->
-                        let v = headerCell.GetValue()
+                        let v = headerString
                         let i = headers.Count + 1
                         headers.Add(v,i)
-                        sheet.Row(1).Cell(i).CopyFrom(headerCell) |> ignore
+                        if hasHeader then
+                            sheet.Row(1).Cell(i).CopyFrom(headerCell) |> ignore
                         i
 
                 let activeCell = activeRow.Cell(index)

@@ -28,16 +28,18 @@ System.IO.File.WriteAllBytes(System.IO.Path.Combine(source,"Users.xlsx"), excelF
 
 
 
-type User = { Name: string; Age: int }
+type User = { Name: string; Age: int ; Job : string}
 
 let data = [
-    { Name = "Jane"; Age = 26 }
-    { Name = "John"; Age = 25 }
+    { Name = "Jane"; Age = 26 ; Job = "Bowling"}
+    { Name = "John"; Age = 25 ; Job = "Dude"}
+    { Name = "Igor"; Age = 23 ; Job = "Lellek"}
 ]
 
 let fields = [
     Excel.field(fun user -> user.Name)
     Excel.field(fun user -> user.Age)
+    Excel.field(fun user -> user.Job).header ("Job")
 ]
 
 let excelFile2 = Excel.createFrom(data,fields)
