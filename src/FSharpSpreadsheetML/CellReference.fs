@@ -43,6 +43,22 @@ module CellReference =
         else 
             failwithf "Reference %s does not match Excel A1-style" reference
 
+    /// Maps a "A1" style excel cell reference to a column (1 Based indices).
+    let toColIndex (reference : string) = 
+        reference |> toIndices |> fst
+
+    /// Maps a "A1" style excel cell reference to a row (1 Based indices).
+    let toRowIndex (reference : string) = 
+        reference |> toIndices |> snd
+
+    /// Sets the column index (1 Based indices) of a "A1" style excel cell reference.
+    let setColIndex colI (reference : string) = 
+        reference |> toIndices |> fun (_,r) -> ofIndices colI r
+
+    /// Sets the row index (1 Based indices) of a "A1" style excel cell reference.
+    let setRowIndex rowI (reference : string) = 
+        reference |> toIndices |> fun (c,_) -> ofIndices c rowI
+
     /// Changes the column portion of a "A1"-style reference by the given amount (positive amount = increase and vice versa).
     let moveHorizontal amount reference = 
         reference
@@ -61,10 +77,20 @@ type XAddress(address : string) =
 
     let mutable _address = address
 
+    new (colI,rowI) = XAddress(CellReference.ofIndices (uint32 colI) (uint32 rowI))
+
     member self.Address 
         with get() = _address
         and set(address) = _address <- address
 
     member self.OfIndices(colIndex,rowIndex) = _address <- CellReference.ofIndices colIndex rowIndex
 
-    member self.ToIndices() = _address |> CellReference.toIndices
+    member self.ToIndices() = _address |> CellReference.toIndices |> fun (c,r) -> int c, int r
+
+    member self.ColumnIndex 
+        with get() = CellReference.toColIndex _address |> int
+        and set(colI) = _address <- CellReference.setColIndex (uint32 colI) _address
+
+    member self.RowIndex
+        with get() = CellReference.toRowIndex _address |> int
+        and set(rowI) = _address <- CellReference.setRowIndex (uint32 rowI) _address

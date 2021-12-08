@@ -371,6 +371,24 @@ module Row =
         |> mapCells (Cell.includeSharedStringValue sst)
 
 // Type based on the type XLRow used in ClosedXml
-type XRow () = 
+type XRow (index : int) = 
 
-    member self.Cell(index : int) = XCell()
+    let mutable _index = index
+    let mutable _cells : XCell list = []
+
+    new () = XRow (0)
+
+    member self.Cell(columnIndex) = 
+        match _cells |> List.tryFind (fun cell -> cell.WorksheetColumn = columnIndex) with
+        | Some cell ->
+            cell
+        | None -> 
+            let cell = XCell()
+            cell.WorksheetColumn <- columnIndex
+            cell.WorksheetRow <- _index
+            _cells <- List.append _cells [cell]
+            cell
+
+    member self.Index 
+        with get() = _index
+        and set(i) = _index <- i

@@ -170,6 +170,24 @@ module Worksheet =
     //let getID (worksheetPart : WorksheetPart) = notImplemented()
 
 // Type based on the type XLWorksheet used in ClosedXml
-type XWorksheet () =
+type XWorksheet (name) =
     
-    member self.Row(rowIndex) = XRow()
+    let mutable _name = name
+    
+    let mutable _rows : XRow list = []
+
+    new () = XWorksheet("")
+
+    member self.Name
+        with get() = _name
+        and set(name) = _name <- name
+
+    member self.Row(rowIndex) = 
+        match _rows |> List.tryFind (fun row -> row.Index = rowIndex) with
+        | Some row ->
+            row
+        | None -> 
+            let row = XRow(rowIndex) 
+            _rows <- List.append _rows [row]
+            row
+        

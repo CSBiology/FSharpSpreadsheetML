@@ -122,3 +122,23 @@ type Excel() =
                 //        ()
                 //| None ->
                 //    ()
+
+
+    static member workbookToBytes(workbook: XWorkbook) =
+        use memoryStream = new System.IO.MemoryStream()
+        workbook.SaveAs(memoryStream)
+        memoryStream.ToArray()
+
+    static member createFrom(name: string, data: seq<'T>, fields: FieldMap<'T> list) : byte[] =
+        use workbook = new XWorkbook()
+        let sheet = workbook.AddWorksheet(name)
+        Excel.populate(sheet, data, fields)
+        Excel.workbookToBytes(workbook)
+
+    static member createFrom(workbook: XWorkbook) =
+        use memoryStream = new System.IO.MemoryStream()
+        workbook.SaveAs(memoryStream)
+        memoryStream.ToArray()
+
+    static member createFrom(data: seq<'T>, fields: FieldMap<'T> list) : byte[] =
+        Excel.createFrom("Sheet1", data, fields)

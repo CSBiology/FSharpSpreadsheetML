@@ -232,8 +232,12 @@ type XCell (value : string, dataType : DataType)=
     
     /// <summary>Gets this cell's address, relative to the worksheet.</summary>
     /// <value>The cell's address.</value>
-    member self.Address = XAddress
-    
+    member self.Address 
+        with get() = XAddress(_columnIndex,_rowIndex)
+        and internal set(adress : XAddress) =
+            _rowIndex <- adress.RowIndex
+            _columnIndex <- adress.ColumnIndex
+
     /// <summary>
     /// Calculated value of cell formula. Is used for decreasing number of computations perfromed.
     /// May hold invalid value when <see cref="NeedsRecalculation"/> flag is True.
@@ -318,7 +322,9 @@ type XCell (value : string, dataType : DataType)=
     /// <value>
     /// The object containing the value(s) to set.
     /// </value>
-    member self.Value = raise (System.NotImplementedException())
+    member self.Value 
+        with get() = _cellValue
+        and set(value) = _cellValue <- value
     
     member self.Worksheet = raise (System.NotImplementedException())
     
@@ -646,6 +652,10 @@ type XCell (value : string, dataType : DataType)=
     
     member self.TryGetValue<'T>(value) = raise (System.NotImplementedException())
     
-    member self.WorksheetColumn() = raise (System.NotImplementedException())
+    member self.WorksheetColumn
+        with get() = _columnIndex
+        and set(colI) = _columnIndex <- colI
     
-    member self.WorksheetRow() = raise (System.NotImplementedException())
+    member self.WorksheetRow
+        with get() = _rowIndex
+        and set(rowI) = _rowIndex <- rowI

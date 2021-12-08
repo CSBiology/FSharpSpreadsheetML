@@ -141,3 +141,18 @@ module WorkbookPart =
         |> ignore 
 
         workbookPart
+
+type XWorkbook() =
+
+    let mutable worksheets = []
+
+    member self.SaveAs(stream : System.IO.MemoryStream) = ()
+
+    member self.AddWorksheet(name : string) = 
+        let sheet = XWorksheet (name)
+        worksheets <- List.append worksheets [sheet]
+        sheet
+        
+    interface System.IDisposable with
+        
+        member self.Dispose() = ()
