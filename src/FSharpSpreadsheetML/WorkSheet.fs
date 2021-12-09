@@ -192,3 +192,5 @@ type XWorksheet (name) =
             row
         
     member self.GetRows() = _rows
+
+    member self.SortRows() = _rows <- _rows |> List.sortBy (fun r -> r.Index)

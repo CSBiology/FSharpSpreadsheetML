@@ -394,3 +394,5 @@ type XRow (index : int) =
     member self.Index 
         with get() = _index
         and set(i) = _index <- i
+
+    member self.SortCells() = _cells <- _cells |> List.sortBy (fun c -> c.WorksheetColumn)

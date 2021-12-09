@@ -205,6 +205,13 @@ type XWorkbook() =
         worksheets <- List.append worksheets [sheet]
         sheet
 
+    member self.AddWorksheet(sheet : XWorksheet) = 
+        if worksheets |> List.exists (fun ws -> ws.Name = sheet.Name) then
+            failwithf "Could not add worksheet with name \"%s\" to workbook as it already contains a worksheet with the same name" sheet.Name
+        else
+            worksheets <- List.append worksheets [sheet]
+        sheet
+
     member self.GetWorksheets() = worksheets
 
     member self.SaveAs(stream : System.IO.MemoryStream) = 
@@ -216,11 +223,11 @@ type XWorkbook() =
         |> List.iter (fun worksheet ->
             let sheetData =                 
                 let sd = SheetData.empty()
-
+                worksheet.SortRows()
                 worksheet.GetRows()
-                |> List.sortBy (fun row -> row.Index)
                 |> List.iter (fun row -> 
-                    let min,max = 
+                    row.SortCells()
+                    let min,max =                        
                         row.GetCells() 
                         |> List.map (fun cell -> uint32 cell.WorksheetColumn) 
                         |> fun l -> List.min l, List.max l
